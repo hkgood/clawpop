@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { CheckCircle2, XCircle, AlertCircle, Loader2, Hexagon, Box, Cloud, GitBranch, Globe, ArrowRight, ArrowLeft } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { useAppStore } from '../../stores/appStore'
 
 interface EnvItemProps {
   name: string
-  icon: string
+  Icon: typeof Hexagon
   status: 'checking' | 'success' | 'warning' | 'error'
   version?: string | null
   message?: string
@@ -13,24 +14,27 @@ interface EnvItemProps {
   onAction?: () => void
 }
 
-function EnvItem({ name, icon, status, version, message, action, onAction }: EnvItemProps) {
+function EnvItem({ name, Icon, status, version, message, action, onAction }: EnvItemProps) {
   const statusConfig = {
-    checking: { color: 'text-text-secondary', icon: '⟳', animate: true },
-    success: { color: 'text-status-success', icon: '✓', animate: false },
-    warning: { color: 'text-status-warning', icon: '⚠', animate: false },
-    error: { color: 'text-status-error', icon: '✗', animate: false },
+    checking: { color: 'text-text-secondary', IconComponent: Loader2, animate: true },
+    success: { color: 'text-status-success', IconComponent: CheckCircle2, animate: false },
+    warning: { color: 'text-status-warning', IconComponent: AlertCircle, animate: false },
+    error: { color: 'text-status-error', IconComponent: XCircle, animate: false },
   }
   
   const config = statusConfig[status]
+  const StatusIcon = config.IconComponent
   
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="flex items-center justify-between p-4 bg-white/5 rounded-xl"
+      className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5"
     >
       <div className="flex items-center gap-4">
-        <span className="text-2xl">{icon}</span>
+        <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
+          <Icon size={20} className="text-text-secondary" />
+        </div>
         <div>
           <div className="font-medium">{name}</div>
           {version && <div className="text-sm text-text-secondary">v{version}</div>}
@@ -40,18 +44,17 @@ function EnvItem({ name, icon, status, version, message, action, onAction }: Env
       
       <div className="flex items-center gap-3">
         {status === 'checking' ? (
-          <motion.span 
+          <motion.div 
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-            className="text-2xl text-text-secondary"
           >
-            ⟳
-          </motion.span>
+            <StatusIcon size={20} className="text-text-secondary" />
+          </motion.div>
         ) : (
-          <span className={`text-2xl ${config.color}`}>{config.icon}</span>
+          <StatusIcon size={20} className={config.color} />
         )}
         
-        {action && status !== 'checking' && (
+        {action && status !== 'checking' && status !== 'success' && (
           <Button size="sm" variant="secondary" onClick={onAction}>
             {action}
           </Button>
@@ -69,13 +72,12 @@ export function EnvCheck() {
   useEffect(() => {
     const checkEnv = async () => {
       setChecking(true)
-      // 模拟检测延迟
       await new Promise(r => setTimeout(r, 1500))
       
       setEnvCheck({
         node: '24.0.0',
         npm: '11.8.0',
-        docker: null, // 模拟未安装
+        docker: null,
         git: '2.40.0',
         network: true,
       })
@@ -88,33 +90,33 @@ export function EnvCheck() {
   const envItems: EnvItemProps[] = [
     { 
       name: 'Node.js', 
-      icon: '⬡', 
+      Icon: Hexagon, 
       status: (envCheck?.node ? 'success' : checking ? 'checking' : 'error') as EnvItemProps['status'],
       version: envCheck?.node 
     },
     { 
       name: 'npm', 
-      icon: '📦', 
+      Icon: Box, 
       status: (envCheck?.npm ? 'success' : checking ? 'checking' : 'error') as EnvItemProps['status'],
       version: envCheck?.npm 
     },
     { 
       name: 'Docker', 
-      icon: '🐳', 
+      Icon: Cloud, 
       status: (envCheck?.docker ? 'success' : checking ? 'checking' : 'warning') as EnvItemProps['status'],
       message: envCheck?.docker ? undefined : '未安装',
       action: '安装',
-      onAction: () => {} // TODO: 打开 Docker 安装指引
+      onAction: () => {}
     },
     { 
       name: 'Git', 
-      icon: '📚', 
+      Icon: GitBranch, 
       status: (envCheck?.git ? 'success' : checking ? 'checking' : 'error') as EnvItemProps['status'],
       version: envCheck?.git 
     },
     { 
       name: '网络', 
-      icon: '🌐', 
+      Icon: Globe, 
       status: (envCheck?.network ? 'success' : checking ? 'checking' : 'error') as EnvItemProps['status'],
       message: envCheck?.network ? '正常' : '无法连接'
     },
@@ -147,13 +149,15 @@ export function EnvCheck() {
       
       <div className="flex justify-between mt-8 pt-4 border-t border-white/10">
         <Button variant="ghost" onClick={() => setPage('welcome')}>
-          ← 上一步
+          <ArrowLeft size={16} />
+          上一步
         </Button>
         <Button 
           disabled={!canProceed}
           onClick={() => setPage('config')}
         >
-          下一步 →
+          下一步
+          <ArrowRight size={16} />
         </Button>
       </div>
     </div>

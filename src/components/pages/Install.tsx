@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { CheckCircle2, Circle, Loader2 } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { Progress } from '../ui/Progress'
 import { useAppStore } from '../../stores/appStore'
@@ -117,12 +118,13 @@ export function Install() {
               step.active ? 'bg-brand-start/10' : 'bg-white/5'
             }`}
           >
-            <span className={`text-lg ${
-              step.done ? 'text-status-success' : 
-              step.active ? 'text-brand-start' : 'text-text-secondary'
-            }`}>
-              {step.done ? '✓' : step.active ? '⟳' : '○'}
-            </span>
+            {step.done ? (
+              <CheckCircle2 size={18} className="text-status-success" />
+            ) : step.active ? (
+              <Loader2 size={18} className="text-brand-start animate-spin" />
+            ) : (
+              <Circle size={18} className="text-text-secondary" />
+            )}
             <span className={step.active ? 'text-white' : 'text-text-secondary'}>
               {step.name}
             </span>

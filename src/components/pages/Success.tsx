@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { Sparkles, Globe, BookOpen, ExternalLink, RefreshCw } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { useAppStore } from '../../stores/appStore'
 
@@ -6,7 +7,6 @@ export function Success() {
   const { reset } = useAppStore()
   
   const handleOpenDashboard = () => {
-    // TODO: 打开控制台
     window.open('http://127.0.0.1:18789', '_blank')
   }
 
@@ -17,9 +17,9 @@ export function Success() {
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-        className="text-6xl mb-6"
+        className="w-24 h-24 rounded-3xl bg-gradient-to-br from-brand-start to-brand-end flex items-center justify-center mb-8 shadow-2xl shadow-brand-start/30"
       >
-        🎉
+        <Sparkles size={40} className="text-white" />
       </motion.div>
       
       <motion.h1
@@ -48,7 +48,9 @@ export function Success() {
         className="w-full max-w-md space-y-4 mb-8"
       >
         <div className="card p-4 flex items-center gap-4">
-          <div className="text-2xl">🌐</div>
+          <div className="w-12 h-12 rounded-xl bg-brand-start/20 flex items-center justify-center">
+            <Globe size={20} className="text-brand-start" />
+          </div>
           <div className="flex-1">
             <div className="text-sm text-text-secondary">控制台地址</div>
             <div className="font-mono text-brand-start">http://127.0.0.1:18789</div>
@@ -56,7 +58,9 @@ export function Success() {
         </div>
         
         <div className="card p-4 flex items-center gap-4">
-          <div className="text-2xl">📖</div>
+          <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center">
+            <BookOpen size={20} className="text-text-secondary" />
+          </div>
           <div className="flex-1">
             <div className="text-sm text-text-secondary">使用方式</div>
             <div className="text-sm">在控制台发送消息即可开始对话</div>
@@ -72,9 +76,11 @@ export function Success() {
         className="flex gap-4"
       >
         <Button onClick={handleOpenDashboard}>
-          🌐 打开控制台
+          <Globe size={16} />
+          打开控制台
         </Button>
         <Button variant="secondary" onClick={reset}>
+          <RefreshCw size={16} />
           重新安装
         </Button>
       </motion.div>
@@ -91,9 +97,10 @@ export function Success() {
           href="https://docs.openclaw.ai" 
           target="_blank"
           rel="noopener noreferrer"
-          className="text-brand-start hover:underline"
+          className="text-brand-start hover:underline inline-flex items-center gap-1"
         >
-          OpenClaw 文档 →
+          OpenClaw 文档
+          <ExternalLink size={12} />
         </a>
       </motion.div>
     </div>

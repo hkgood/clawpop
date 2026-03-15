@@ -1,20 +1,21 @@
 import { motion } from 'framer-motion'
+import { Bot, Key, MessageSquare, ArrowRight, ArrowLeft, ExternalLink, Check } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
 import { useAppStore } from '../../stores/appStore'
 
 const models = [
-  { id: 'minimax-m2.5', name: 'MiniMax-M2.5', desc: '推荐 · 免费额度大', recommended: true },
+  { id: 'minimax-m2.5', name: 'MiniMax-M2.5', desc: '免费额度大', recommended: true },
   { id: 'claude-haiku', name: 'Claude Haiku', desc: '快速响应' },
   { id: 'claude-sonnet', name: 'Claude Sonnet', desc: '平衡体验' },
   { id: 'claude-opus', name: 'Claude Opus', desc: '最强能力' },
 ]
 
 const channels = [
-  { id: 'telegram', name: 'Telegram', icon: '✈️' },
-  { id: 'discord', name: 'Discord', icon: '🎮' },
-  { id: 'feishu', name: '飞书', icon: '📱' },
-  { id: 'whatsapp', name: 'WhatsApp', icon: '💬' },
+  { id: 'telegram', name: 'Telegram' },
+  { id: 'discord', name: 'Discord' },
+  { id: 'feishu', name: '飞书' },
+  { id: 'whatsapp', name: 'WhatsApp' },
 ]
 
 export function Config() {
@@ -49,7 +50,8 @@ export function Config() {
         className="mb-8"
       >
         <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
-          🤖 选择模型
+          <Bot size={18} />
+          选择模型
         </h3>
         <div className="space-y-2">
           {models.map((model) => (
@@ -76,7 +78,7 @@ export function Config() {
                   </div>
                   <div className="text-sm text-text-secondary">{model.desc}</div>
                 </div>
-                <div className={`w-5 h-5 rounded-full border-2 ${
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                   installConfig.model === model.id 
                     ? 'border-brand-start bg-brand-start' 
                     : 'border-white/30'
@@ -85,9 +87,8 @@ export function Config() {
                     <motion.div 
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      className="w-full h-full flex items-center justify-center text-xs"
                     >
-                      ✓
+                      <Check size={12} className="text-white" />
                     </motion.div>
                   )}
                 </div>
@@ -105,7 +106,8 @@ export function Config() {
         className="mb-8"
       >
         <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
-          🔑 API Key
+          <Key size={18} />
+          API Key
         </h3>
         <Input
           type="password"
@@ -116,13 +118,13 @@ export function Config() {
         <div className="mt-2 text-sm text-text-secondary">
           <a 
             href="#" 
-            className="text-brand-start hover:underline"
+            className="text-brand-start hover:underline inline-flex items-center gap-1"
             onClick={(e) => {
               e.preventDefault()
-              // TODO: 打开获取 API Key 的链接
             }}
           >
-            获取 API Key →
+            获取 API Key
+            <ExternalLink size={12} />
           </a>
         </div>
       </motion.div>
@@ -135,7 +137,8 @@ export function Config() {
         className="mb-8"
       >
         <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
-          💬 消息通道
+          <MessageSquare size={18} />
+          消息通道
         </h3>
         <div className="grid grid-cols-2 gap-3">
           {channels.map((channel) => (
@@ -151,7 +154,7 @@ export function Config() {
               }`}
             >
               <div className="flex items-center gap-3">
-                <span className="text-2xl">{channel.icon}</span>
+                <MessageSquare size={18} className={installConfig.channels.includes(channel.id) ? 'text-brand-start' : 'text-text-secondary'} />
                 <span className="font-medium">{channel.name}</span>
               </div>
             </motion.button>
@@ -161,10 +164,12 @@ export function Config() {
       
       <div className="flex justify-between mt-auto pt-4 border-t border-white/10">
         <Button variant="ghost" onClick={() => setPage('env')}>
-          ← 上一步
+          <ArrowLeft size={16} />
+          上一步
         </Button>
         <Button disabled={!canProceed} onClick={() => setPage('install')}>
-          下一步 →
+          下一步
+          <ArrowRight size={16} />
         </Button>
       </div>
     </div>
