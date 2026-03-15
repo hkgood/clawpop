@@ -8,22 +8,22 @@ export default {
     extend: {
       colors: {
         brand: {
-          start: '#FF6B6B',
-          end: '#FFE66D',
+          start: '#3B82F6',  // 蓝色
+          end: '#06B6D4',    // 青色
         },
         bg: {
-          primary: '#1A1A2E',
-          secondary: '#16213E',
-          dark: '#0F0F1A',
+          primary: '#0F172A',  // 深蓝黑
+          secondary: '#1E293B', // 蓝灰
+          dark: '#020617',     // 近黑
         },
         text: {
-          primary: '#FFFFFF',
-          secondary: '#A0A0A0',
+          primary: '#F8FAFC',
+          secondary: '#94A3B8',
         },
         status: {
-          success: '#4ADE80',
-          warning: '#FB923C',
-          error: '#F87171',
+          success: '#10B981',
+          warning: '#F59E0B',
+          error: '#EF4444',
         }
       },
       fontFamily: {
@@ -50,8 +50,8 @@ export default {
           '100%': { transform: 'translateX(0)', opacity: '1' },
         },
         pulseGlow: {
-          '0%, 100%': { boxShadow: '0 0 20px rgba(255, 107, 107, 0.3)' },
-          '50%': { boxShadow: '0 0 40px rgba(255, 107, 107, 0.6)' },
+          '0%, 100%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.3)' },
+          '50%': { boxShadow: '0 0 40px rgba(6, 182, 212, 0.6)' },
         },
       },
     },

@@ -19,10 +19,10 @@ function App() {
   }
   
   return (
-    <div className="h-screen w-screen flex bg-bg-primary overflow-hidden">
+    <div className="h-screen w-screen flex bg-gradient-to-br from-bg-primary to-bg-dark overflow-hidden rounded-2xl">
       <Sidebar />
       
-      <main className="flex-1 flex flex-col overflow-hidden">
+      <main className="flex-1 flex flex-col overflow-hidden rounded-2xl">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentPage}

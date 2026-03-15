@@ -1,4 +1,4 @@
-# 🦾 clawpop
+# 🦾 ClawPop
 
 > 「啪嗒一下，OpenClaw 装好了」
 
@@ -48,8 +48,8 @@
 
 ```bash
 # 克隆项目
-git clone https://github.com/hkgood/clawpop.git
-cd clawpop
+git clone https://github.com/hkgood/ClawPop.git
+cd ClawPop
 
 # 安装依赖
 npm install
@@ -64,7 +64,7 @@ npm run tauri build
 ## 📁 项目结构
 
 ```
-clawpop/
+ClawPop/
 ├── src/                      # React 前端
 │   ├── components/           # UI 组件
 │   │   ├── layout/           # 布局组件
