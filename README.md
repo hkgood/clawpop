@@ -17,16 +17,6 @@
 - 🛡️ **错误恢复** - 安装失败可重试
 - 🌐 **跨平台** - 支持 macOS 和 Windows
 
-## 📸 截图
-
-| 欢迎页 | 环境检测 | 配置向导 |
-|:---:|:---:|:---:|
-| ![Welcome](screenshots/01-welcome.jpg) | ![Env](screenshots/02-env.jpg) | ![Config](screenshots/03-config.jpg) |
-
-| 安装页 | 完成页 |
-|:---:|:---:|
-| ![Install](screenshots/04-install.jpg) | ![Success](screenshots/05-success.jpg) |
-
 ## 🛠 技术栈
 
 - **框架**: [Tauri 2.x](https://tauri.app/) - 跨平台桌面应用
