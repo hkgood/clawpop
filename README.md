@@ -21,11 +21,11 @@
 
 | 欢迎页 | 环境检测 | 配置向导 |
 |:---:|:---:|:---:|
-| ![Welcome](https://via.placeholder.com/400x300/1A1A2E/FF6B6B?text=Welcome) | ![Env](https://via.placeholder.com/400x300/1A1A2E/FF6B6B?text=Environment) | ![Config](https://via.placeholder.com/400x300/1A1A2E/FF6B6B?text=Config) |
+| ![Welcome](screenshots/01-welcome.jpg) | ![Env](screenshots/02-env.jpg) | ![Config](screenshots/03-config.jpg) |
 
 | 安装页 | 完成页 |
 |:---:|:---:|
-| ![Install](https://via.placeholder.com/400x300/1A1A2E/FF6B6B?text=Installing) | ![Success](https://via.placeholder.com/400x300/1A1A2E/4ADE80?text=Success) |
+| ![Install](screenshots/04-install.jpg) | ![Success](screenshots/05-success.jpg) |
 
 ## 🛠 技术栈
 
@@ -76,6 +76,7 @@ clawpop/
 ├── src-tauri/                # Rust 后端
 │   ├── src/                  # Rust 源代码
 │   └── tauri.conf.json       # Tauri 配置
+├── screenshots/              # 项目截图
 └── public/                   # 静态资源
 ```
 
