@@ -12,6 +12,7 @@ const installSteps = [
   { id: 'config', name: '初始化配置', done: false },
   { id: 'service', name: '安装服务', done: false },
   { id: 'start', name: '启动服务', done: false },
+  { id: 'done', name: '安装完成', done: false },
 ]
 
 export function Install() {
@@ -82,6 +83,20 @@ export function Install() {
   }, [setInstallProgress])
   
   const progressValue = installProgress?.progress || 0
+  
+  // 根据进度计算当前步骤
+  const getStepStatus = (stepId: string) => {
+    if (!isInstalling && progressValue === 100) {
+      return { done: true, active: false }
+    }
+    if (stepId === 'check') return { done: true, active: false }
+    if (progressValue >= 20 && stepId === 'clone') return { done: true, active: false }
+    if (progressValue >= 40 && stepId === 'deps') return { done: true, active: false }
+    if (progressValue >= 60 && stepId === 'config') return { done: true, active: false }
+    if (progressValue >= 80 && stepId === 'service') return { done: true, active: false }
+    if (progressValue >= 95 && stepId === 'start') return { done: true, active: false }
+    return { done: false, active: false }
+  }
 
   return (
     <div className="flex-1 flex flex-col px-8 py-6">
@@ -108,28 +123,31 @@ export function Install() {
       
       {/* 步骤列表 */}
       <div className="mb-6 space-y-2">
-        {installSteps.map((step, index) => (
+        {installSteps.map((step, index) => {
+          const status = getStepStatus(step.id)
+          return (
           <motion.div
             key={step.id}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.05 }}
             className={`flex items-center gap-3 p-3 rounded-lg ${
-              step.active ? 'bg-brand-start/10' : 'bg-white/5'
+              status.active ? 'bg-brand-start/10' : 'bg-white/5'
             }`}
           >
-            {step.done ? (
+            {status.done ? (
               <CheckCircle2 size={18} className="text-status-success" />
-            ) : step.active ? (
+            ) : status.active ? (
               <Loader2 size={18} className="text-brand-start animate-spin" />
             ) : (
               <Circle size={18} className="text-text-secondary" />
             )}
-            <span className={step.active ? 'text-white' : 'text-text-secondary'}>
+            <span className={status.active ? 'text-white' : 'text-text-secondary'}>
               {step.name}
             </span>
           </motion.div>
-        ))}
+          )
+        })}
       </div>
       
       {/* 日志输出 */}
