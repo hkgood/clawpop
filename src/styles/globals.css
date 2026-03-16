@@ -12,6 +12,7 @@ html, body, #root {
   height: 100%;
   width: 100%;
   overflow: hidden;
+  border-radius: 16px;
 }
 
 body {
@@ -20,6 +21,7 @@ body {
   color: #F8FAFC;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  border-radius: 16px;
 }
 
 /* 滚动条样式 */
