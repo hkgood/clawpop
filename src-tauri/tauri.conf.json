@@ -21,6 +21,7 @@
         "resizable": true,
         "decorations": false,
         "transparent": true,
+        "radius": 16,
         "fullscreen": false,
         "alwaysOnTop": false
       }

@@ -6,13 +6,12 @@ import { Progress } from '../ui/Progress'
 import { useAppStore } from '../../stores/appStore'
 
 const installSteps = [
-  { id: 'check', name: '检查环境', done: true },
-  { id: 'clone', name: '克隆仓库', done: false, active: true },
-  { id: 'deps', name: '安装依赖', done: false },
-  { id: 'config', name: '初始化配置', done: false },
-  { id: 'service', name: '安装服务', done: false },
-  { id: 'start', name: '启动服务', done: false },
-  { id: 'done', name: '安装完成', done: false },
+  { id: 'check', name: '检查环境' },
+  { id: 'clone', name: '克隆仓库' },
+  { id: 'deps', name: '安装依赖' },
+  { id: 'config', name: '初始化配置' },
+  { id: 'service', name: '安装服务' },
+  { id: 'start', name: '启动服务' },
 ]
 
 export function Install() {
@@ -76,25 +75,34 @@ export function Install() {
       } else {
         clearInterval(interval)
         setIsInstalling(false)
+        // 安装完成后自动跳转到成功页面
+        setTimeout(() => {
+          setPage('success')
+        }, 500)
       }
     }, 200)
     
     return () => clearInterval(interval)
-  }, [setInstallProgress])
+  }, [setInstallProgress, setPage])
   
   const progressValue = installProgress?.progress || 0
   
   // 根据进度计算当前步骤
-  const getStepStatus = (stepId: string) => {
+  const getStepStatus = (stepIndex: number) => {
     if (!isInstalling && progressValue === 100) {
       return { done: true, active: false }
     }
-    if (stepId === 'check') return { done: true, active: false }
-    if (progressValue >= 20 && stepId === 'clone') return { done: true, active: false }
-    if (progressValue >= 40 && stepId === 'deps') return { done: true, active: false }
-    if (progressValue >= 60 && stepId === 'config') return { done: true, active: false }
-    if (progressValue >= 80 && stepId === 'service') return { done: true, active: false }
-    if (progressValue >= 95 && stepId === 'start') return { done: true, active: false }
+    // 0-16: check, 17-33: clone, 34-50: deps, 51-66: config, 67-83: service, 84-100: start
+    const thresholds = [17, 33, 50, 66, 83, 95]
+    if (progressValue >= thresholds[stepIndex]) {
+      return { done: true, active: false }
+    }
+    if (stepIndex === 0 && progressValue > 0) {
+      return { done: true, active: false }
+    }
+    if (stepIndex === Math.floor(progressValue / 16.6)) {
+      return { done: false, active: true }
+    }
     return { done: false, active: false }
   }
 
@@ -121,10 +129,10 @@ export function Install() {
         <Progress value={progressValue} />
       </motion.div>
       
-      {/* 步骤列表 */}
+      {/* 步骤列表 - 简化版，仅显示当前状态 */}
       <div className="mb-6 space-y-2">
         {installSteps.map((step, index) => {
-          const status = getStepStatus(step.id)
+          const status = getStepStatus(index)
           return (
           <motion.div
             key={step.id}
@@ -184,17 +192,6 @@ export function Install() {
           </Button>
         </motion.div>
       )}
-      
-      <div className="flex justify-between mt-6 pt-4 border-t border-white/10">
-        <Button variant="ghost" onClick={() => setPage('config')} disabled={isInstalling}>
-          ← 上一步
-        </Button>
-        {!isInstalling && (
-          <Button onClick={() => setPage('success')}>
-            查看结果 →
-          </Button>
-        )}
-      </div>
     </div>
   )
 }
