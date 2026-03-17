@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, HelpCircle } from 'lucide-react'
+import { X, HelpCircle, Minus } from 'lucide-react'
 import { Welcome } from './components/pages/Welcome'
 import { EnvCheck } from './components/pages/EnvCheck'
 import { Config } from './components/pages/Config'
@@ -31,6 +31,11 @@ function App() {
         e.preventDefault()
         setShowHelp(prev => !prev)
       }
+      // M = 最小化
+      if ((e.metaKey || e.ctrlKey) && e.key === 'm') {
+        e.preventDefault()
+        invoke('minimize_window')
+      }
     }
     
     window.addEventListener('keydown', handleKeyDown)
@@ -48,6 +53,10 @@ function App() {
   const handleClose = () => {
     invoke('close_window')
   }
+
+  const handleMinimize = () => {
+    invoke('minimize_window')
+  }
   
   return (
     <div className="h-screen w-screen flex flex-col bg-gradient-to-br from-bg-primary to-bg-dark overflow-hidden rounded-[16px]">
@@ -57,6 +66,13 @@ function App() {
           <span className="text-xs text-text-secondary">ClawPop</span>
         </div>
         <div className="flex items-center gap-1">
+          <button
+            onClick={handleMinimize}
+            className="w-6 h-6 rounded-md flex items-center justify-center text-text-secondary hover:bg-white/10 hover:text-white transition-colors"
+            title="最小化 (⌘M)"
+          >
+            <Minus size={14} />
+          </button>
           <button
             onClick={() => setShowHelp(true)}
             className="w-6 h-6 rounded-md flex items-center justify-center text-text-secondary hover:bg-white/10 hover:text-white transition-colors"
@@ -99,6 +115,10 @@ function App() {
                 <div className="flex justify-between">
                   <span>确认 / 下一步</span>
                   <kbd className="px-2 py-1 bg-white/10 rounded text-xs">Enter</kbd>
+                </div>
+                <div className="flex justify-between">
+                  <span>最小化窗口</span>
+                  <kbd className="px-2 py-1 bg-white/10 rounded text-xs">⌘ + M</kbd>
                 </div>
                 <div className="flex justify-between">
                   <span>显示帮助</span>
