@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { CheckCircle2, Circle, Loader2 } from 'lucide-react'
+import { CheckCircle2, Circle, Loader2, Copy, Check } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { Progress } from '../ui/Progress'
 import { useAppStore } from '../../stores/appStore'
@@ -18,6 +18,20 @@ export function Install() {
   const { setPage, installProgress, setInstallProgress, installError, setInstallError } = useAppStore()
   const [logs, setLogs] = useState<string[]>([])
   const [isInstalling, setIsInstalling] = useState(true)
+  const [copied, setCopied] = useState(false)
+  const logContainerRef = useRef<HTMLDivElement>(null)
+  
+  // 复制日志到剪贴板
+  const handleCopyLogs = async () => {
+    const logText = logs.join('\n')
+    try {
+      await navigator.clipboard.writeText(logText)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      console.error('Failed to copy:', err)
+    }
+  }
   
   // 模拟安装过程
   useEffect(() => {
@@ -159,7 +173,19 @@ export function Install() {
       </div>
       
       {/* 日志输出 */}
-      <div className="flex-1 bg-black/30 rounded-xl p-4 font-mono text-sm overflow-y-auto">
+      <div className="flex-1 bg-black/30 rounded-xl p-4 font-mono text-sm overflow-y-auto" ref={logContainerRef}>
+        {/* 复制按钮 */}
+        {logs.length > 0 && (
+          <div className="flex justify-end mb-2">
+            <button
+              onClick={handleCopyLogs}
+              className="flex items-center gap-1 text-xs text-text-secondary hover:text-white transition-colors"
+            >
+              {copied ? <Check size={12} className="text-status-success" /> : <Copy size={12} />}
+              {copied ? '已复制' : '复制日志'}
+            </button>
+          </div>
+        )}
         {logs.map((log, index) => (
           <div 
             key={index} 

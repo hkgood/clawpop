@@ -1,5 +1,6 @@
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Bot, Key, MessageSquare, ArrowRight, ArrowLeft, ExternalLink, Check } from 'lucide-react'
+import { Bot, Key, MessageSquare, ArrowRight, ArrowLeft, ExternalLink, Check, X } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
 import { useAppStore } from '../../stores/appStore'
@@ -12,14 +13,26 @@ const models = [
 ]
 
 const channels = [
-  { id: 'telegram', name: 'Telegram' },
-  { id: 'discord', name: 'Discord' },
-  { id: 'feishu', name: '飞书' },
-  { id: 'whatsapp', name: 'WhatsApp' },
+  { id: 'telegram', name: 'Telegram', icon: '✈️', color: 'text-[#26A5E4]' },
+  { id: 'discord', name: 'Discord', icon: '🎮', color: 'text-[#5865F2]' },
+  { id: 'feishu', name: '飞书', icon: '📮', color: 'text-[#4285F4]' },
+  { id: 'whatsapp', name: 'WhatsApp', icon: '💬', color: 'text-[#25D366]' },
 ]
 
 export function Config() {
   const { installConfig, setInstallConfig, setPage } = useAppStore()
+  const [apiKeyValid, setApiKeyValid] = useState<boolean | null>(null)
+  
+  // 验证 API Key 格式
+  useEffect(() => {
+    if (!installConfig.apiKey) {
+      setApiKeyValid(null)
+      return
+    }
+    // 简单验证：长度 > 10，不包含空格
+    const isValid = installConfig.apiKey.length > 10 && !installConfig.apiKey.includes(' ')
+    setApiKeyValid(isValid)
+  }, [installConfig.apiKey])
   
   const toggleChannel = (channelId: string) => {
     const current = installConfig.channels
@@ -108,6 +121,24 @@ export function Config() {
         <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
           <Key size={18} />
           API Key
+          {apiKeyValid === true && (
+            <motion.span 
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="ml-2 px-2 py-0.5 text-xs bg-status-success/20 text-status-success rounded-full flex items-center gap-1"
+            >
+              <Check size={10} /> 格式正确
+            </motion.span>
+          )}
+          {apiKeyValid === false && (
+            <motion.span 
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="ml-2 px-2 py-0.5 text-xs bg-status-error/20 text-status-error rounded-full flex items-center gap-1"
+            >
+              <X size={10} /> 格式错误
+            </motion.span>
+          )}
         </h3>
         <Input
           type="password"
@@ -115,7 +146,7 @@ export function Config() {
           value={installConfig.apiKey}
           onChange={(e) => setInstallConfig({ apiKey: e.target.value })}
         />
-        <div className="mt-2 text-sm text-text-secondary">
+        <div className="mt-2 text-sm text-text-secondary flex items-center justify-between">
           <a 
             href="#" 
             className="text-brand-start hover:underline inline-flex items-center gap-1"
@@ -126,6 +157,9 @@ export function Config() {
             获取 API Key
             <ExternalLink size={12} />
           </a>
+          {apiKeyValid === false && (
+            <span className="text-status-error text-xs">Key 长度需大于 10 位</span>
+          )}
         </div>
       </motion.div>
       
@@ -154,7 +188,7 @@ export function Config() {
               }`}
             >
               <div className="flex items-center gap-3">
-                <MessageSquare size={18} className={installConfig.channels.includes(channel.id) ? 'text-brand-start' : 'text-text-secondary'} />
+                <span className="text-xl">{channel.icon}</span>
                 <span className="font-medium">{channel.name}</span>
               </div>
             </motion.button>

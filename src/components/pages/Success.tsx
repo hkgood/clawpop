@@ -1,13 +1,26 @@
 import { motion } from 'framer-motion'
-import { Sparkles, Globe, BookOpen, ExternalLink, RefreshCw } from 'lucide-react'
+import { Sparkles, Globe, BookOpen, ExternalLink, RefreshCw, Copy, Check, MessageCircle } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { useAppStore } from '../../stores/appStore'
+import { useState } from 'react'
 
 export function Success() {
   const { reset } = useAppStore()
+  const [copied, setCopied] = useState(false)
+  const consoleUrl = 'http://127.0.0.1:18789'
   
   const handleOpenDashboard = () => {
-    window.open('http://127.0.0.1:18789', '_blank')
+    window.open(consoleUrl, '_blank')
+  }
+
+  const handleCopyUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(consoleUrl)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      console.error('Failed to copy:', err)
+    }
   }
 
   return (
@@ -53,17 +66,27 @@ export function Success() {
           </div>
           <div className="flex-1">
             <div className="text-sm text-text-secondary">控制台地址</div>
-            <div className="font-mono text-brand-start">http://127.0.0.1:18789</div>
+            <button 
+              onClick={handleCopyUrl}
+              className="font-mono text-brand-start hover:underline flex items-center gap-1 group"
+            >
+              {consoleUrl}
+              {copied ? (
+                <Check size={14} className="text-status-success" />
+              ) : (
+                <Copy size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+              )}
+            </button>
           </div>
         </div>
         
         <div className="card p-4 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center">
-            <BookOpen size={20} className="text-text-secondary" />
+          <div className="w-12 h-12 rounded-xl bg-status-success/20 flex items-center justify-center">
+            <MessageCircle size={20} className="text-status-success" />
           </div>
           <div className="flex-1">
-            <div className="text-sm text-text-secondary">使用方式</div>
-            <div className="text-sm">在控制台发送消息即可开始对话</div>
+            <div className="text-sm text-text-secondary">下一步</div>
+            <div className="text-sm">在控制台发送 <code className="px-1.5 py-0.5 bg-white/10 rounded text-brand-start">/start</code> 开始对话</div>
           </div>
         </div>
       </motion.div>

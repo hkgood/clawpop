@@ -20,11 +20,11 @@ export function Button({
   onClick,
   type = 'button',
 }: ButtonProps) {
-  const baseStyles = 'rounded-xl font-semibold transition-all duration-150 flex items-center justify-center gap-2'
+  const baseStyles = 'rounded-xl font-semibold transition-all duration-150 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-brand-start/50 focus:ring-offset-2 focus:ring-offset-bg-primary'
   
   const variants = {
-    primary: 'btn-gradient text-white',
-    secondary: 'bg-transparent border border-white/20 text-white hover:bg-white/10',
+    primary: 'btn-gradient text-white shadow-lg shadow-brand-start/25 hover:shadow-brand-start/40',
+    secondary: 'bg-transparent border border-white/20 text-white hover:bg-white/10 hover:border-white/30',
     ghost: 'bg-transparent text-text-secondary hover:text-white',
   }
   
@@ -38,7 +38,7 @@ export function Button({
     <motion.button
       whileHover={{ scale: 1.02, y: -2 }}
       whileTap={{ scale: 0.98 }}
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className} disabled:opacity-50 disabled:cursor-not-allowed`}
+      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className} disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:y-0`}
       disabled={disabled}
       onClick={onClick}
       type={type}

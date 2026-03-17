@@ -10,11 +10,12 @@ interface EnvItemProps {
   status: 'checking' | 'success' | 'warning' | 'error'
   version?: string | null
   message?: string
+  fixCommand?: string
   action?: string
   onAction?: () => void
 }
 
-function EnvItem({ name, Icon, status, version, message, action, onAction }: EnvItemProps) {
+function EnvItem({ name, Icon, status, version, message, fixCommand, action, onAction }: EnvItemProps) {
   const statusConfig = {
     checking: { color: 'text-text-secondary', IconComponent: Loader2, animate: true },
     success: { color: 'text-status-success', IconComponent: CheckCircle2, animate: false },
@@ -38,7 +39,14 @@ function EnvItem({ name, Icon, status, version, message, action, onAction }: Env
         <div>
           <div className="font-medium">{name}</div>
           {version && <div className="text-sm text-text-secondary">v{version}</div>}
-          {message && <div className="text-sm text-status-warning">{message}</div>}
+          {message && <div className={`text-sm ${status === 'error' ? 'text-status-error' : 'text-status-warning'}`}>{message}</div>}
+          {fixCommand && status !== 'success' && status !== 'checking' && (
+            <div className="mt-1">
+              <code className="text-xs px-2 py-1 bg-black/30 rounded font-mono text-text-secondary">
+                {fixCommand}
+              </code>
+            </div>
+          )}
         </div>
       </div>
       
@@ -92,19 +100,22 @@ export function EnvCheck() {
       name: 'Node.js', 
       Icon: Hexagon, 
       status: (envCheck?.node ? 'success' : checking ? 'checking' : 'error') as EnvItemProps['status'],
-      version: envCheck?.node 
+      version: envCheck?.node,
+      fixCommand: !envCheck?.node && !checking ? 'brew install node' : undefined
     },
     { 
       name: 'npm', 
       Icon: Box, 
       status: (envCheck?.npm ? 'success' : checking ? 'checking' : 'error') as EnvItemProps['status'],
-      version: envCheck?.npm 
+      version: envCheck?.npm,
+      fixCommand: !envCheck?.npm && !checking ? 'brew install npm' : undefined
     },
     { 
       name: 'Docker', 
       Icon: Cloud, 
       status: (envCheck?.docker ? 'success' : checking ? 'checking' : 'warning') as EnvItemProps['status'],
-      message: envCheck?.docker ? undefined : '未安装',
+      message: envCheck?.docker ? undefined : '未安装（非必需）',
+      fixCommand: !envCheck?.docker && !checking ? 'brew install --cask docker' : undefined,
       action: '安装',
       onAction: () => {}
     },
@@ -112,13 +123,15 @@ export function EnvCheck() {
       name: 'Git', 
       Icon: GitBranch, 
       status: (envCheck?.git ? 'success' : checking ? 'checking' : 'error') as EnvItemProps['status'],
-      version: envCheck?.git 
+      version: envCheck?.git,
+      fixCommand: !envCheck?.git && !checking ? 'brew install git' : undefined
     },
     { 
       name: '网络', 
       Icon: Globe, 
       status: (envCheck?.network ? 'success' : checking ? 'checking' : 'error') as EnvItemProps['status'],
-      message: envCheck?.network ? '正常' : '无法连接'
+      message: envCheck?.network ? '正常' : '无法连接',
+      fixCommand: !envCheck?.network && !checking ? '检查网络连接' : undefined
     },
   ]
   
