@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Sparkles, Globe, BookOpen, ExternalLink, RefreshCw, Copy, Check, MessageCircle } from 'lucide-react'
+import { Sparkles, Globe, ExternalLink, RefreshCw, Copy, Check, MessageCircle } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { useAppStore } from '../../stores/appStore'
 import { useState } from 'react'
