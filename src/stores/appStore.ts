@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 export type Page = 'welcome' | 'env' | 'config' | 'install' | 'success'
 
@@ -43,25 +44,36 @@ const defaultInstallConfig: InstallConfig = {
   channels: [],
 }
 
-export const useAppStore = create<AppState>((set) => ({
-  currentPage: 'welcome',
-  envCheck: null,
-  installConfig: defaultInstallConfig,
-  installProgress: null,
-  installError: null,
-  
-  setPage: (page) => set({ currentPage: page }),
-  setEnvCheck: (result) => set({ envCheck: result }),
-  setInstallConfig: (config) => set((state) => ({
-    installConfig: { ...state.installConfig, ...config }
-  })),
-  setInstallProgress: (progress) => set({ installProgress: progress }),
-  setInstallError: (error) => set({ installError: error }),
-  reset: () => set({
-    currentPage: 'welcome',
-    envCheck: null,
-    installConfig: defaultInstallConfig,
-    installProgress: null,
-    installError: null,
-  }),
-}))
+export const useAppStore = create<AppState>()(
+  persist(
+    (set) => ({
+      currentPage: 'welcome',
+      envCheck: null,
+      installConfig: defaultInstallConfig,
+      installProgress: null,
+      installError: null,
+      
+      setPage: (page) => set({ currentPage: page }),
+      setEnvCheck: (result) => set({ envCheck: result }),
+      setInstallConfig: (config) => set((state) => ({
+        installConfig: { ...state.installConfig, ...config }
+      })),
+      setInstallProgress: (progress) => set({ installProgress: progress }),
+      setInstallError: (error) => set({ installError: error }),
+      reset: () => set({
+        currentPage: 'welcome',
+        envCheck: null,
+        installConfig: defaultInstallConfig,
+        installProgress: null,
+        installError: null,
+      }),
+    }),
+    {
+      name: 'clawpop-storage',
+      partialize: (state) => ({ 
+        // 只持久化配置，不持久化安装进度
+        installConfig: state.installConfig 
+      }),
+    }
+  )
+)
