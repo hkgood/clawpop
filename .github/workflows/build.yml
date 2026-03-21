@@ -26,7 +26,10 @@ jobs:
       - name: Update version from tag
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
-          npm version $VERSION --no-git-tag-version
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          if [ "$VERSION" != "$CURRENT_VERSION" ]; then
+            npm version $VERSION --no-git-tag-version
+          fi
           
       - name: Install dependencies
         run: npm install
@@ -58,7 +61,10 @@ jobs:
       - name: Update version from tag
         run: |
           $version = $env:GITHUB_REF -replace 'refs/tags/v', ''
-          npm version $version --no-git-tag-version
+          $currentVersion = (Get-Content package.json | ConvertFrom-Json).version
+          if ($version -ne $currentVersion) {
+            npm version $version --no-git-tag-version
+          }
           
       - name: Install dependencies
         run: npm install
