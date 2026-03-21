@@ -1,29 +1,61 @@
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, Globe } from 'lucide-react'
+import { ArrowRight, Trash2, Settings, Play, Loader2, Cog } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { useAppStore } from '../../stores/appStore'
-import { useState } from 'react'
+import { useTranslation } from '../../i18n/useTranslation'
+import { invoke } from '@tauri-apps/api/core'
 
 export function Welcome() {
-  const { setPage } = useAppStore()
-  const [language, setLanguage] = useState<'zh' | 'en'>('zh')
-  
-  const t = {
-    zh: {
-      title: 'clawpop',
-      subtitle: '让安装 OpenClaw 变得像打开 App 一样简单',
-      slogan: '「啪嗒一下，装好了」',
-      button: '开始使用',
-    },
-    en: {
-      title: 'clawpop',
-      subtitle: 'Install OpenClaw as easily as opening an App',
-      slogan: '"Snap! It\'s installed"',
-      button: 'Get Started',
+  const { setPage, theme } = useAppStore()
+  const { t } = useTranslation()
+  const [isInstalled, setIsInstalled] = useState<boolean | null>(null)
+  const [isRunning, setIsRunning] = useState(false)
+  const [checking, setChecking] = useState(true)
+
+  // 检测安装和运行状态
+  useEffect(() => {
+    const checkStatus = async () => {
+      setChecking(true)
+      try {
+        const installed = await invoke<boolean>('check_installed')
+        setIsInstalled(installed)
+        
+        if (installed) {
+          const running = await invoke<boolean>('check_running')
+          setIsRunning(running)
+        }
+      } catch {
+        setIsInstalled(false)
+      } finally {
+        setChecking(false)
+      }
+    }
+    checkStatus()
+  }, [])
+
+  const handleOpenConsole = () => {
+    window.open('http://127.0.0.1:18789', '_blank')
+  }
+
+  const handleStartService = async () => {
+    try {
+      await invoke('start_service')
+      setIsRunning(true)
+    } catch (err) {
+      console.error('Failed to start:', err)
     }
   }
-  
-  const text = t[language]
+
+  // 加载中
+  if (checking) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center px-8">
+        <Loader2 size={32} className="text-brand-start animate-spin mb-4" />
+        <p className={theme === 'light' ? 'text-[#64748B]' : 'text-text-secondary'}>检测安装状态...</p>
+      </div>
+    )
+  }
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center px-8">
@@ -40,70 +72,82 @@ export function Welcome() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="text-4xl font-bold text-center mb-4 tracking-tight"
+        className={`text-4xl font-bold text-center mb-4 tracking-tight ${theme === 'light' ? 'text-[#1E293B]' : ''}`}
       >
-        {text.title}
+        {t.welcome.title}
       </motion.h1>
       
       <motion.p 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="text-lg text-text-secondary text-center mb-3"
+        className={`text-lg text-center mb-3 ${theme === 'light' ? 'text-[#64748B]' : 'text-text-secondary'}`}
       >
-        {text.subtitle}
+        {t.welcome.subtitle}
       </motion.p>
       
       <motion.p 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="text-base text-brand-start font-medium mb-10"
+        className="text-base text-brand-start font-medium mb-8"
       >
-        {text.slogan}
+        {t.welcome.slogan}
       </motion.p>
       
+      {/* 根据安装状态显示不同按钮 */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
+        className="flex flex-col gap-3"
       >
-        <Button 
-          size="lg"
-          onClick={() => setPage('env')}
-          className="px-12"
-        >
-          {text.button}
-          <ArrowRight size={18} />
-        </Button>
-      </motion.div>
-      
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.8 }}
-        className="mt-10 flex gap-2"
-      >
-        <button 
-          onClick={() => setLanguage('zh')}
-          className={`px-3 py-1 rounded-full text-sm transition-all ${
-            language === 'zh' 
-              ? 'bg-brand-start text-white' 
-              : 'text-text-secondary hover:text-white hover:bg-white/10'
-          }`}
-        >
-          中文
-        </button>
-        <button 
-          onClick={() => setLanguage('en')}
-          className={`px-3 py-1 rounded-full text-sm transition-all ${
-            language === 'en' 
-              ? 'bg-brand-start text-white' 
-              : 'text-text-secondary hover:text-white hover:bg-white/10'
-          }`}
-        >
-          English
-        </button>
+        {isInstalled ? (
+          // 已安装
+          <>
+            {isRunning ? (
+              <Button size="lg" onClick={handleOpenConsole} className="px-12">
+                <Play size={18} />
+                打开控制台
+              </Button>
+            ) : (
+              <Button size="lg" onClick={handleStartService} className="px-12">
+                <Play size={18} />
+                启动服务
+              </Button>
+            )}
+            <div className="flex gap-3 justify-center">
+              <Button variant="secondary" onClick={() => setPage('config')}>
+                <Settings size={16} />
+                配置
+              </Button>
+              <Button variant="secondary" onClick={() => setPage('settings')}>
+                <Cog size={16} />
+                设置
+              </Button>
+              <Button variant="ghost" onClick={() => setPage('uninstall')}>
+                <Trash2 size={16} />
+                卸载
+              </Button>
+            </div>
+          </>
+        ) : (
+          // 未安装
+          <>
+            <Button 
+              size="lg"
+              onClick={() => setPage('env')}
+              className="px-12"
+            >
+              {t.welcome.button}
+              <ArrowRight size={18} />
+            </Button>
+            <Button variant="ghost" onClick={() => setPage('uninstall')}>
+              <Trash2 size={16} />
+              {t.welcome.uninstall}
+            </Button>
+          </>
+        )}
       </motion.div>
     </div>
   )

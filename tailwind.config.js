@@ -8,7 +8,7 @@ export default {
     extend: {
       colors: {
         brand: {
-          start: '#3B82F6',  // 蓝色
+          start: '#8B5CF6',  // 紫色
           end: '#06B6D4',    // 青色
         },
         bg: {

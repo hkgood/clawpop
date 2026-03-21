@@ -1,27 +1,22 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { CheckCircle2, Circle, Loader2, Copy, Check } from 'lucide-react'
+import { CheckCircle2, Circle, Loader2, Copy, Check, X } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { Progress } from '../ui/Progress'
 import { useAppStore } from '../../stores/appStore'
+import { useTranslation } from '../../i18n/useTranslation'
 import { invoke } from '@tauri-apps/api/core'
 import { listen } from '@tauri-apps/api/event'
 
-const installSteps = [
-  { id: 'check', name: '检查环境' },
-  { id: 'clone', name: '克隆仓库' },
-  { id: 'deps', name: '安装依赖' },
-  { id: 'config', name: '初始化配置' },
-  { id: 'service', name: '安装服务' },
-  { id: 'start', name: '启动服务' },
-]
-
 export function Install() {
   const { setPage, installProgress, setInstallProgress, installError, setInstallError, installConfig } = useAppStore()
+  const { t } = useTranslation()
   const [logs, setLogs] = useState<string[]>([])
   const [isInstalling, setIsInstalling] = useState(true)
+  const [isCancelling, setIsCancelling] = useState(false)
   const [copied, setCopied] = useState(false)
   const logContainerRef = useRef<HTMLDivElement>(null)
+  const installCancelled = useRef(false)
   
   // 复制日志到剪贴板
   const handleCopyLogs = async () => {
@@ -35,13 +30,34 @@ export function Install() {
     }
   }
   
+  // 取消安装
+  const handleCancel = useCallback(async () => {
+    if (isCancelling) return
+    setIsCancelling(true)
+    installCancelled.current = true
+    
+    try {
+      await invoke('cancel_install')
+    } catch {
+      // 忽略取消错误
+    }
+    
+    // 延迟返回欢迎页
+    setTimeout(() => {
+      setIsInstalling(false)
+      setPage('welcome')
+    }, 500)
+  }, [isCancelling, setPage])
+  
   // 监听安装日志事件
   useEffect(() => {
     const unlistenLog = listen<string>('install-log', (event) => {
+      if (installCancelled.current) return
       setLogs(prev => [...prev, event.payload])
     })
     
     const unlistenProgress = listen<{step: string, message: string, progress: number}>('install-progress', (event) => {
+      if (installCancelled.current) return
       setInstallProgress(event.payload)
     })
     
@@ -59,15 +75,21 @@ export function Install() {
         setLogs(prev => [...prev, '> 开始安装 OpenClaw...', ''])
         await invoke('check_env')
         
+        if (installCancelled.current) return
+        
         // 第二步：开始安装（包含配置保存和克隆）
         await invoke('start_install', { config: installConfig })
+        
+        if (installCancelled.current) return
         
         // 安装完成
         setIsInstalling(false)
         setTimeout(() => setPage('success'), 1000)
       } catch (err) {
-        setInstallError(String(err))
-        setIsInstalling(false)
+        if (!installCancelled.current) {
+          setInstallError(String(err))
+          setIsInstalling(false)
+        }
       }
     }
     
@@ -75,6 +97,16 @@ export function Install() {
   }, [])
   
   const progressValue = installProgress?.progress || 0
+  
+  // 步骤名称（根据语言）
+  const steps = [
+    { id: 'check', name: t.install.stepCheck },
+    { id: 'clone', name: t.install.stepClone },
+    { id: 'deps', name: t.install.stepDeps },
+    { id: 'config', name: t.install.stepConfig },
+    { id: 'service', name: t.install.stepService },
+    { id: 'start', name: t.install.stepStart },
+  ]
   
   // 根据进度计算当前步骤
   const getStepStatus = (stepIndex: number) => {
@@ -99,27 +131,47 @@ export function Install() {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
+        className="flex items-center justify-between"
       >
-        <h2 className="text-2xl font-bold mb-2">
-          {isInstalling ? '安装中' : '安装完成'}
-        </h2>
-        <p className="text-text-secondary mb-6">
-          {installProgress?.message || '正在安装 OpenClaw...'}
-        </p>
+        <div>
+          <h2 className="text-2xl font-bold mb-2">
+            {isInstalling ? t.install.title : t.install.titleDone}
+          </h2>
+          <p className="text-text-secondary">
+            {installProgress?.message || t.install.subtitle}
+          </p>
+        </div>
+        
+        {/* 取消按钮 */}
+        {isInstalling && (
+          <Button 
+            variant="ghost" 
+            onClick={handleCancel}
+            disabled={isCancelling}
+            className="text-status-error hover:text-status-error"
+          >
+            {isCancelling ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <X size={16} />
+            )}
+            取消
+          </Button>
+        )}
       </motion.div>
       
       {/* 进度条 */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-6"
+        className="my-6"
       >
-        <Progress value={progressValue} />
+        <Progress value={progressValue} showPercentage />
       </motion.div>
       
       {/* 步骤列表 */}
       <div className="mb-6 space-y-2">
-        {installSteps.map((step, index) => {
+        {steps.map((step, index) => {
           const status = getStepStatus(index)
           return (
           <motion.div
@@ -155,7 +207,7 @@ export function Install() {
               className="flex items-center gap-1 text-xs text-text-secondary hover:text-white transition-colors"
             >
               {copied ? <Check size={12} className="text-status-success" /> : <Copy size={12} />}
-              {copied ? '已复制' : '复制日志'}
+              {copied ? t.install.copied : t.install.copyLogs}
             </button>
           </div>
         )}
@@ -182,13 +234,13 @@ export function Install() {
           animate={{ opacity: 1, y: 0 }}
           className="mt-4 p-4 bg-status-error/20 border border-status-error rounded-xl"
         >
-          <div className="text-status-error font-medium">安装失败</div>
+          <div className="text-status-error font-medium">{t.install.error}</div>
           <div className="text-sm text-text-secondary mt-1">{installError}</div>
           <Button 
             className="mt-3" 
             onClick={() => setInstallError(null)}
           >
-            重试
+            {t.install.retry}
           </Button>
         </motion.div>
       )}

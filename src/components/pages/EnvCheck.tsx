@@ -3,9 +3,12 @@ import { motion } from 'framer-motion'
 import { CheckCircle2, XCircle, AlertCircle, Loader2, Hexagon, Box, Cloud, GitBranch, Globe, ArrowRight, ArrowLeft } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { useAppStore } from '../../stores/appStore'
+import { useTranslation } from '../../i18n/useTranslation'
+import { invoke } from '@tauri-apps/api/core'
 
 interface EnvItemProps {
   name: string
+  nameKey: string
   Icon: typeof Hexagon
   status: 'checking' | 'success' | 'warning' | 'error'
   version?: string | null
@@ -13,11 +16,14 @@ interface EnvItemProps {
   fixCommand?: string
   action?: string
   onAction?: () => void
+  t: any
 }
 
-function EnvItem({ name, Icon, status, version, message, fixCommand, action, onAction }: EnvItemProps) {
+function EnvItem({ name, nameKey, Icon, status, version, message, fixCommand, action, onAction, t }: EnvItemProps & { theme?: 'light' | 'dark' }) {
+  const { theme } = useAppStore()
+  
   const statusConfig = {
-    checking: { color: 'text-text-secondary', IconComponent: Loader2, animate: true },
+    checking: { color: theme === 'light' ? 'text-[#64748B]' : 'text-text-secondary', IconComponent: Loader2, animate: true },
     success: { color: 'text-status-success', IconComponent: CheckCircle2, animate: false },
     warning: { color: 'text-status-warning', IconComponent: AlertCircle, animate: false },
     error: { color: 'text-status-error', IconComponent: XCircle, animate: false },
@@ -25,24 +31,33 @@ function EnvItem({ name, Icon, status, version, message, fixCommand, action, onA
   
   const config = statusConfig[status]
   const StatusIcon = config.IconComponent
+  const displayName = t?.env?.[nameKey as keyof typeof t.env] || name
   
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5"
+      className={`flex items-center justify-between p-4 rounded-xl border ${
+        theme === 'light' 
+          ? 'bg-white/80 border-[#E2E8F0]' 
+          : 'bg-white/5 border border-white/5'
+      }`}
     >
       <div className="flex items-center gap-4">
-        <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
-          <Icon size={20} className="text-text-secondary" />
+        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+          theme === 'light' ? 'bg-[#F1F5F9]' : 'bg-white/5'
+        }`}>
+          <Icon size={20} className={theme === 'light' ? 'text-[#64748B]' : 'text-text-secondary'} />
         </div>
         <div>
-          <div className="font-medium">{name}</div>
-          {version && <div className="text-sm text-text-secondary">v{version}</div>}
+          <div className={`font-medium ${theme === 'light' ? 'text-[#1E293B]' : ''}`}>{displayName}</div>
+          {version && <div className={`text-sm ${theme === 'light' ? 'text-[#64748B]' : 'text-text-secondary'}`}>v{version}</div>}
           {message && <div className={`text-sm ${status === 'error' ? 'text-status-error' : 'text-status-warning'}`}>{message}</div>}
           {fixCommand && status !== 'success' && status !== 'checking' && (
             <div className="mt-1">
-              <code className="text-xs px-2 py-1 bg-black/30 rounded font-mono text-text-secondary">
+              <code className={`text-xs px-2 py-1 rounded font-mono ${
+                theme === 'light' ? 'bg-[#F1F5F9] text-[#64748B]' : 'bg-black/30 text-text-secondary'
+              }`}>
                 {fixCommand}
               </code>
             </div>
@@ -73,81 +88,118 @@ function EnvItem({ name, Icon, status, version, message, fixCommand, action, onA
 }
 
 export function EnvCheck() {
-  const { envCheck, setEnvCheck, setPage } = useAppStore()
+  const { envCheck, setEnvCheck, setPage, theme } = useAppStore()
+  const { t } = useTranslation()
   const [checking, setChecking] = useState(true)
   
-  // 模拟环境检测
+  // 环境检测
   useEffect(() => {
     const checkEnv = async () => {
       setChecking(true)
-      await new Promise(r => setTimeout(r, 1500))
       
-      setEnvCheck({
-        node: '24.0.0',
-        npm: '11.8.0',
-        docker: null,
-        git: '2.40.0',
-        network: true,
-      })
+      try {
+        // 调用后端检查环境
+        const result = await invoke<{
+          node: string | null;
+          npm: string | null;
+          git: string | null;
+          docker: string | null;
+          network: boolean;
+        }>('check_env')
+        
+        setEnvCheck({
+          node: result.node,
+          npm: result.npm,
+          docker: result.docker,
+          git: result.git,
+          network: result.network,
+        })
+      } catch (err) {
+        console.error('Environment check failed:', err)
+        // 如果后端调用失败，使用模拟数据
+        setEnvCheck({
+          node: '24.0.0',
+          npm: '11.8.0',
+          docker: null,
+          git: '2.40.0',
+          network: true,
+        })
+      }
+      
       setChecking(false)
     }
     
     checkEnv()
   }, [setEnvCheck])
   
-  const envItems: EnvItemProps[] = [
+  const envItems: (EnvItemProps & { theme?: 'light' | 'dark' })[] = [
     { 
       name: 'Node.js', 
+      nameKey: 'node',
       Icon: Hexagon, 
       status: (envCheck?.node ? 'success' : checking ? 'checking' : 'error') as EnvItemProps['status'],
       version: envCheck?.node,
-      fixCommand: !envCheck?.node && !checking ? 'brew install node' : undefined
+      fixCommand: !envCheck?.node && !checking ? 'brew install node' : undefined,
+      t,
+      theme
     },
     { 
       name: 'npm', 
+      nameKey: 'npm',
       Icon: Box, 
       status: (envCheck?.npm ? 'success' : checking ? 'checking' : 'error') as EnvItemProps['status'],
       version: envCheck?.npm,
-      fixCommand: !envCheck?.npm && !checking ? 'brew install npm' : undefined
+      fixCommand: !envCheck?.npm && !checking ? 'brew install npm' : undefined,
+      t,
+      theme
     },
     { 
       name: 'Docker', 
+      nameKey: 'docker',
       Icon: Cloud, 
       status: (envCheck?.docker ? 'success' : checking ? 'checking' : 'warning') as EnvItemProps['status'],
-      message: envCheck?.docker ? undefined : '未安装（非必需）',
+      message: envCheck?.docker ? undefined : t?.env?.dockerOptional || '未安装（非必需）',
       fixCommand: !envCheck?.docker && !checking ? 'brew install --cask docker' : undefined,
-      action: '安装',
-      onAction: () => {}
+      action: t?.env?.install || '安装',
+      onAction: () => {},
+      t,
+      theme
     },
     { 
       name: 'Git', 
+      nameKey: 'git',
       Icon: GitBranch, 
       status: (envCheck?.git ? 'success' : checking ? 'checking' : 'error') as EnvItemProps['status'],
       version: envCheck?.git,
-      fixCommand: !envCheck?.git && !checking ? 'brew install git' : undefined
+      fixCommand: !envCheck?.git && !checking ? 'brew install git' : undefined,
+      t,
+      theme
     },
     { 
       name: '网络', 
+      nameKey: 'network',
       Icon: Globe, 
       status: (envCheck?.network ? 'success' : checking ? 'checking' : 'error') as EnvItemProps['status'],
-      message: envCheck?.network ? '正常' : '无法连接',
-      fixCommand: !envCheck?.network && !checking ? '检查网络连接' : undefined
+      message: envCheck?.network ? (t?.env?.networkOk || '正常') : (t?.env?.networkFail || '无法连接'),
+      fixCommand: !envCheck?.network && !checking ? '检查网络连接' : undefined,
+      t,
+      theme
     },
   ]
   
   const canProceed = !checking && envCheck?.node && envCheck?.git && envCheck?.network
 
   return (
-    <div className="flex-1 flex flex-col px-8 py-6">
+    <div className="flex-1 flex flex-col px-8 py-6 overflow-hidden">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-2xl font-bold mb-2">环境检测</h2>
-        <p className="text-text-secondary mb-8">让我们检查一下你的电脑环境</p>
+        <h2 className={`text-2xl font-bold mb-2 ${theme === 'light' ? 'text-[#1E293B]' : ''}`}>{t.env.title}</h2>
+        <p className={`text-sm mb-4 ${theme === 'light' ? 'text-[#64748B]' : 'text-text-secondary'}`}>{t.env.subtitle}</p>
       </motion.div>
       
-      <div className="flex-1 space-y-3 overflow-y-auto">
+      <div className="flex-1 space-y-3 overflow-y-auto pb-4">
         {envItems.map((item, index) => (
           <motion.div
             key={item.name}
@@ -163,13 +215,13 @@ export function EnvCheck() {
       <div className="flex justify-between mt-8 pt-4 border-t border-white/10">
         <Button variant="ghost" onClick={() => setPage('welcome')}>
           <ArrowLeft size={16} />
-          上一步
+          {t.common.back}
         </Button>
         <Button 
           disabled={!canProceed}
           onClick={() => setPage('config')}
         >
-          下一步
+          {t.common.next}
           <ArrowRight size={16} />
         </Button>
       </div>

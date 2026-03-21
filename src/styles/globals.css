@@ -2,6 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg-primary: #0F172A;
+  --bg-secondary: #1E293B;
+  --bg-dark: #020617;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --brand-start: #8B5CF6;
+  --brand-end: #06B6D4;
+  --card-bg: rgba(30, 41, 59, 0.8);
+  --card-border: rgba(255, 255, 255, 0.05);
+}
+
+.theme-light {
+  --bg-primary: #F1F5F9;
+  --bg-secondary: #FFFFFF;
+  --bg-dark: #E2E8F0;
+  --text-primary: #1E293B;
+  --text-secondary: #64748B;
+  --brand-start: #8B5CF6;
+  --brand-end: #06B6D4;
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --card-border: rgba(0, 0, 0, 0.08);
+  --status-success: #10B981;
+  --status-error: #EF4444;
+  --status-warning: #F59E0B;
+}
+
+/* 暗色主题默认 */
+body {
+  background: transparent;
+  color: var(--text-primary);
+}
+
+/* 浅色主题 */
+.theme-light body,
+.theme-light .bg-bg-primary { background: var(--bg-primary); }
+.theme-light .bg-bg-secondary { background: var(--bg-secondary); }
+.theme-light .bg-bg-dark { background: var(--bg-dark); }
+.theme-light .text-text-primary { color: var(--text-primary); }
+.theme-light .text-text-secondary { color: var(--text-secondary); }
+
+/* 确保窗口背景透明 */
+#root {
+  background: transparent !important;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -30,8 +76,12 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent;
   border-radius: 3px;
+}
+
+.theme-light ::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -39,16 +89,28 @@ body {
   border-radius: 3px;
 }
 
+.theme-light ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+}
+
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
 
+.theme-light ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
 /* 玻璃效果 */
 .glass {
-  background: rgba(30, 41, 59, 0.8);
+  background: var(--card-bg);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+}
+
+.theme-light .glass {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 }
 
 /* 渐变按钮 */
@@ -69,17 +131,24 @@ body {
 
 /* 卡片样式 */
 .card {
-  background: #1E293B;
+  background: var(--card-bg);
   border-radius: 16px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
   transition: all 0.2s ease;
+}
+
+.theme-light .card {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 }
 
 .card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.theme-light .card:hover {
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15);
 }
 
 /* 输入框样式 */
@@ -88,16 +157,26 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   padding: 12px 16px;
-  color: #F8FAFC;
+  color: var(--text-primary);
   transition: all 0.2s ease;
+}
+
+.theme-light .input {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #1E293B;
 }
 
 .input:focus {
   outline: none;
-  border-color: #3B82F6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--brand-start);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+
+.theme-light .input:focus {
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
 }
 
 .input::placeholder {
-  color: #94A3B8;
+  color: var(--text-secondary);
 }

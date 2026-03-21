@@ -5,14 +5,23 @@ import { EnvCheck } from './components/pages/EnvCheck'
 import { Config } from './components/pages/Config'
 import { Install } from './components/pages/Install'
 import { Success } from './components/pages/Success'
+import { Uninstall } from './components/pages/Uninstall'
+import { SettingsPage } from './components/pages/Settings'
 import { ProgressBar } from './components/ui/ProgressBar'
+import { LanguageSelector } from './components/ui/LanguageSelector'
+import { ThemeToggle } from './components/ui/ThemeToggle'
 import { useAppStore } from './stores/appStore'
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 
 function App() {
-  const { currentPage, setPage } = useAppStore()
+  const { currentPage, setPage, theme } = useAppStore()
   const [showHelp, setShowHelp] = useState(false)
+  
+  // 应用主题
+  useEffect(() => {
+    document.body.className = theme === 'light' ? 'theme-light' : ''
+  }, [theme])
   
   // 键盘导航支持
   useEffect(() => {
@@ -48,6 +57,8 @@ function App() {
     config: <Config />,
     install: <Install />,
     success: <Success />,
+    uninstall: <Uninstall />,
+    settings: <SettingsPage />,
   }
 
   const handleClose = () => {
@@ -59,30 +70,55 @@ function App() {
   }
   
   return (
-    <div className="h-screen w-screen flex flex-col bg-gradient-to-br from-bg-primary to-bg-dark overflow-hidden rounded-[16px]">
+    <div className={`h-screen w-screen flex flex-col overflow-hidden rounded-[16px] ${
+      theme === 'light' 
+        ? 'bg-gradient-to-br from-[#F8FAFC] to-[#E2E8F0]' 
+        : 'bg-gradient-to-br from-bg-primary to-bg-dark'
+    }`}>
       {/* 自定义标题栏 - 包含关闭按钮 */}
-      <div className="h-10 flex items-center justify-between px-4 bg-bg-secondary/50" data-tauri-drag-region>
-        <div className="flex items-center gap-2" data-tauri-drag-region>
-          <span className="text-xs text-text-secondary">ClawPop</span>
+      <div 
+        className={`h-10 flex items-center justify-between px-4 select-none cursor-default ${
+          theme === 'light' 
+            ? 'bg-white/70 text-[#1E293B]' 
+            : 'bg-bg-secondary/50 text-white'
+        }`}
+        data-tauri-drag-region
+      >
+        <div className="flex items-center gap-2">
+          <span className={`text-xs ${theme === 'light' ? 'text-[#64748B]' : 'text-text-secondary'}`}>ClawPop</span>
+          <LanguageSelector />
+          <ThemeToggle />
         </div>
         <div className="flex items-center gap-1">
           <button
             onClick={handleMinimize}
-            className="w-6 h-6 rounded-md flex items-center justify-center text-text-secondary hover:bg-white/10 hover:text-white transition-colors"
+            className={`w-6 h-6 rounded-md flex items-center justify-center transition-colors ${
+              theme === 'light'
+                ? 'text-[#64748B] hover:bg-black/10 hover:text-[#1E293B]'
+                : 'text-text-secondary hover:bg-white/10 hover:text-white'
+            }`}
             title="最小化 (⌘M)"
           >
             <Minus size={14} />
           </button>
           <button
             onClick={() => setShowHelp(true)}
-            className="w-6 h-6 rounded-md flex items-center justify-center text-text-secondary hover:bg-white/10 hover:text-white transition-colors"
+            className={`w-6 h-6 rounded-md flex items-center justify-center transition-colors ${
+              theme === 'light'
+                ? 'text-[#64748B] hover:bg-black/10 hover:text-[#1E293B]'
+                : 'text-text-secondary hover:bg-white/10 hover:text-white'
+            }`}
             title="帮助 (⌘?)"
           >
             <HelpCircle size={14} />
           </button>
           <button
             onClick={handleClose}
-            className="w-6 h-6 rounded-md flex items-center justify-center text-text-secondary hover:bg-status-error/80 hover:text-white transition-colors"
+            className={`w-6 h-6 rounded-md flex items-center justify-center transition-colors ${
+              theme === 'light'
+                ? 'text-[#64748B] hover:bg-status-error hover:text-white'
+                : 'text-text-secondary hover:bg-status-error/80 hover:text-white'
+            }`}
           >
             <X size={14} />
           </button>

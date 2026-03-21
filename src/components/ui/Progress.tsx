@@ -4,9 +4,10 @@ interface ProgressProps {
   value: number
   className?: string
   showLabel?: boolean
+  showPercentage?: boolean
 }
 
-export function Progress({ value, className = '', showLabel = true }: ProgressProps) {
+export function Progress({ value, className = '', showLabel = true, showPercentage = false }: ProgressProps) {
   const clampedValue = Math.min(100, Math.max(0, value))
   
   return (
@@ -31,10 +32,10 @@ export function Progress({ value, className = '', showLabel = true }: ProgressPr
           />
         )}
       </div>
-      {showLabel && (
+      {(showLabel || showPercentage) && (
         <div className="flex justify-between mt-2 text-sm text-text-secondary">
-          <span>进度</span>
-          <span>{Math.round(clampedValue)}%</span>
+          {showLabel && <span>进度</span>}
+          {showPercentage && <span>{Math.round(clampedValue)}%</span>}
         </div>
       )}
     </div>

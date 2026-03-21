@@ -4,12 +4,13 @@ import { Bot, Key, MessageSquare, ArrowRight, ArrowLeft, ExternalLink, Check, X 
 import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
 import { useAppStore } from '../../stores/appStore'
+import { useTranslation } from '../../i18n/useTranslation'
 
-const models = [
-  { id: 'minimax-m2.5', name: 'MiniMax-M2.5', desc: '免费额度大', recommended: true },
-  { id: 'claude-haiku', name: 'Claude Haiku', desc: '快速响应' },
-  { id: 'claude-sonnet', name: 'Claude Sonnet', desc: '平衡体验' },
-  { id: 'claude-opus', name: 'Claude Opus', desc: '最强能力' },
+const modelIds = [
+  { id: 'minimax-m2.5', nameKey: 'minimaxM25', descKey: 'free' },
+  { id: 'claude-haiku', nameKey: 'claudeHaiku', descKey: 'fast' },
+  { id: 'claude-sonnet', nameKey: 'claudeSonnet', descKey: 'balanced' },
+  { id: 'claude-opus', nameKey: 'claudeOpus', descKey: 'powerful' },
 ]
 
 const channels = [
@@ -19,8 +20,47 @@ const channels = [
   { id: 'whatsapp', name: 'WhatsApp', icon: '💬', color: 'text-[#25D366]' },
 ]
 
+// 模型名称翻译
+const modelNames: Record<string, Record<string, string>> = {
+  zh: {
+    minimaxM25: 'MiniMax-M2.5',
+    claudeHaiku: 'Claude Haiku',
+    claudeSonnet: 'Claude Sonnet',
+    claudeOpus: 'Claude Opus',
+  },
+  en: {
+    minimaxM25: 'MiniMax-M2.5',
+    claudeHaiku: 'Claude Haiku',
+    claudeSonnet: 'Claude Sonnet',
+    claudeOpus: 'Claude Opus',
+  }
+}
+
+// 模型描述翻译
+const modelDescs: Record<string, Record<string, string>> = {
+  zh: {
+    free: '免费额度大',
+    fast: '快速响应',
+    balanced: '平衡体验',
+    powerful: '最强能力',
+  },
+  en: {
+    free: 'Large free quota',
+    fast: 'Fast response',
+    balanced: 'Balanced',
+    powerful: 'Most powerful',
+  }
+}
+
+// 推荐标签翻译
+const recommendText = {
+  zh: '推荐',
+  en: 'Recommended',
+}
+
 export function Config() {
   const { installConfig, setInstallConfig, setPage } = useAppStore()
+  const { t, language } = useTranslation()
   const [apiKeyValid, setApiKeyValid] = useState<boolean | null>(null)
   
   // 验证 API Key 格式
@@ -51,8 +91,8 @@ export function Config() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-2xl font-bold mb-2">配置向导</h2>
-        <p className="text-text-secondary mb-8">选择你的 AI 模型和消息通道</p>
+        <h2 className="text-2xl font-bold mb-2">{t.config.title}</h2>
+        <p className="text-text-secondary mb-8">{t.config.subtitle}</p>
       </motion.div>
       
       {/* 模型选择 */}
@@ -64,10 +104,10 @@ export function Config() {
       >
         <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
           <Bot size={18} />
-          选择模型
+          {t.config.modelSelect}
         </h3>
         <div className="space-y-2">
-          {models.map((model) => (
+          {modelIds.map((model) => (
             <motion.button
               key={model.id}
               whileHover={{ scale: 1.01 }}
@@ -82,14 +122,14 @@ export function Config() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="font-medium flex items-center gap-2">
-                    {model.name}
-                    {model.recommended && (
+                    {modelNames[language][model.nameKey]}
+                    {model.id === 'minimax-m2.5' && (
                       <span className="px-2 py-0.5 text-xs bg-status-success/20 text-status-success rounded-full">
-                        推荐
+                        {recommendText[language]}
                       </span>
                     )}
                   </div>
-                  <div className="text-sm text-text-secondary">{model.desc}</div>
+                  <div className="text-sm text-text-secondary">{modelDescs[language][model.descKey]}</div>
                 </div>
                 <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                   installConfig.model === model.id 
@@ -120,14 +160,14 @@ export function Config() {
       >
         <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
           <Key size={18} />
-          API Key
+          {t.config.apiKey}
           {apiKeyValid === true && (
             <motion.span 
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               className="ml-2 px-2 py-0.5 text-xs bg-status-success/20 text-status-success rounded-full flex items-center gap-1"
             >
-              <Check size={10} /> 格式正确
+              <Check size={10} /> {t.config.apiKeyValid}
             </motion.span>
           )}
           {apiKeyValid === false && (
@@ -136,13 +176,13 @@ export function Config() {
               animate={{ scale: 1 }}
               className="ml-2 px-2 py-0.5 text-xs bg-status-error/20 text-status-error rounded-full flex items-center gap-1"
             >
-              <X size={10} /> 格式错误
+              <X size={10} /> {t.config.apiKeyInvalid}
             </motion.span>
           )}
         </h3>
         <Input
           type="password"
-          placeholder="输入你的 API Key"
+          placeholder={t.config.apiKeyPlaceholder}
           value={installConfig.apiKey}
           onChange={(e) => setInstallConfig({ apiKey: e.target.value })}
         />
@@ -154,7 +194,7 @@ export function Config() {
               e.preventDefault()
             }}
           >
-            获取 API Key
+            {t.config.getApiKey}
             <ExternalLink size={12} />
           </a>
           {apiKeyValid === false && (
@@ -172,7 +212,7 @@ export function Config() {
       >
         <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
           <MessageSquare size={18} />
-          消息通道
+          {t.config.channels}
         </h3>
         <div className="grid grid-cols-2 gap-3">
           {channels.map((channel) => (
@@ -199,10 +239,10 @@ export function Config() {
       <div className="flex justify-between mt-auto pt-4 border-t border-white/10">
         <Button variant="ghost" onClick={() => setPage('env')}>
           <ArrowLeft size={16} />
-          上一步
+          {t.config.back}
         </Button>
         <Button disabled={!canProceed} onClick={() => setPage('install')}>
-          下一步
+          {t.config.next}
           <ArrowRight size={16} />
         </Button>
       </div>

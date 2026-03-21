@@ -2,10 +2,12 @@ import { motion } from 'framer-motion'
 import { Sparkles, Globe, ExternalLink, RefreshCw, Copy, Check, MessageCircle } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { useAppStore } from '../../stores/appStore'
+import { useTranslation } from '../../i18n/useTranslation'
 import { useState } from 'react'
 
 export function Success() {
   const { reset } = useAppStore()
+  const { t, language } = useTranslation()
   const [copied, setCopied] = useState(false)
   const consoleUrl = 'http://127.0.0.1:18789'
   
@@ -41,7 +43,7 @@ export function Success() {
         transition={{ delay: 0.2 }}
         className="text-4xl font-bold text-center mb-4"
       >
-        安装成功!
+        {t.success.title}
       </motion.h1>
       
       <motion.p
@@ -50,7 +52,7 @@ export function Success() {
         transition={{ delay: 0.3 }}
         className="text-xl text-text-secondary text-center mb-8"
       >
-        OpenClaw 已经装好了，随时可以使用
+        {t.success.subtitle}
       </motion.p>
       
       {/* 信息卡片 */}
@@ -65,7 +67,7 @@ export function Success() {
             <Globe size={20} className="text-brand-start" />
           </div>
           <div className="flex-1">
-            <div className="text-sm text-text-secondary">控制台地址</div>
+            <div className="text-sm text-text-secondary">{t.success.consoleUrl}</div>
             <button 
               onClick={handleCopyUrl}
               className="font-mono text-brand-start hover:underline flex items-center gap-1 group"
@@ -85,8 +87,10 @@ export function Success() {
             <MessageCircle size={20} className="text-status-success" />
           </div>
           <div className="flex-1">
-            <div className="text-sm text-text-secondary">下一步</div>
-            <div className="text-sm">在控制台发送 <code className="px-1.5 py-0.5 bg-white/10 rounded text-brand-start">/start</code> 开始对话</div>
+            <div className="text-sm text-text-secondary">{t.success.nextStep}</div>
+            <div className="text-sm">
+              {language === 'zh' ? '在控制台发送' : 'Send'} <code className="px-1.5 py-0.5 bg-white/10 rounded text-brand-start">{t.success.startCmd}</code> {language === 'zh' ? '开始对话' : 'to start'}
+            </div>
           </div>
         </div>
       </motion.div>
@@ -100,11 +104,11 @@ export function Success() {
       >
         <Button onClick={handleOpenDashboard}>
           <Globe size={16} />
-          打开控制台
+          {t.success.openConsole}
         </Button>
         <Button variant="secondary" onClick={reset}>
           <RefreshCw size={16} />
-          重新安装
+          {t.success.reinstall}
         </Button>
       </motion.div>
       
@@ -115,14 +119,14 @@ export function Success() {
         transition={{ delay: 0.8 }}
         className="mt-12 text-sm text-text-secondary text-center"
       >
-        <p>如有问题，请查看</p>
+        <p>{language === 'zh' ? '如有问题，请查看' : 'For help, check'}</p>
         <a 
           href="https://docs.openclaw.ai" 
           target="_blank"
           rel="noopener noreferrer"
           className="text-brand-start hover:underline inline-flex items-center gap-1"
         >
-          OpenClaw 文档
+          {t.success.docs}
           <ExternalLink size={12} />
         </a>
       </motion.div>
