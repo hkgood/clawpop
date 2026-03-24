@@ -20,8 +20,6 @@ interface EnvItemProps {
 }
 
 function EnvItem({ name, nameKey, Icon, status, version, message, fixCommand, action, onAction, t }: EnvItemProps) {
-  const { theme } = useAppStore()
-  
   const statusConfig = {
     checking: { color: 'text-secondary', IconComponent: Loader2, animate: true },
     success: { color: 'text-success', IconComponent: CheckCircle2, animate: false },

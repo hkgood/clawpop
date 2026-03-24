@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
 import { ReactNode } from 'react'
-import { useAppStore } from '../../stores/appStore'
 
 interface ButtonProps {
   children: ReactNode

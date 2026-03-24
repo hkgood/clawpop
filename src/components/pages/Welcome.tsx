@@ -7,7 +7,7 @@ import { useTranslation } from '../../i18n/useTranslation'
 import { invoke } from '@tauri-apps/api/core'
 
 export function Welcome() {
-  const { setPage, theme } = useAppStore()
+  const { setPage } = useAppStore()
   const { t } = useTranslation()
   const [isInstalled, setIsInstalled] = useState<boolean | null>(null)
   const [isRunning, setIsRunning] = useState(false)

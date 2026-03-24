@@ -1,5 +1,4 @@
 import { useTranslation } from '../../i18n/useTranslation'
-import { useAppStore } from '../../stores/appStore'
 
 interface LanguageSelectorProps {
   className?: string
