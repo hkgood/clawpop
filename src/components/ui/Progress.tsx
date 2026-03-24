@@ -14,7 +14,7 @@ export function Progress({ value, className = '', showLabel = true, showPercenta
   
   return (
     <div className={`w-full ${className}`}>
-      <div className="h-3 bg-brand-20 rounded-full overflow-hidden relative">
+      <div className="h-3 bg-accent rounded-full overflow-hidden relative">
         <motion.div 
           className="h-full rounded-full bg-btn-primary"
           initial={{ width: 0 }}

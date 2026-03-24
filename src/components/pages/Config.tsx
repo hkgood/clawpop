@@ -128,8 +128,8 @@ export function Config() {
               onClick={() => setInstallConfig({ model: model.id })}
               className={`w-full p-4 rounded text-left transition-all ${
                 installConfig.model === model.id 
-                  ? 'bg-brand-40 border-2 border-brand' 
-                  : 'bg-brand-10 border-2 border-transparent hover:border-default'
+                  ? 'bg-accent border-2 border-accent' 
+                  : 'bg-hover border-2 border-transparent hover:border-default'
               }`}
             >
               <div className="flex items-center justify-between">
@@ -236,8 +236,8 @@ export function Config() {
               onClick={() => toggleChannel(channel.id)}
               className={`p-4 rounded text-left transition-all ${
                 installConfig.channels.includes(channel.id)
-                  ? 'bg-brand-40 border-2 border-brand'
-                  : 'bg-brand-10 border-2 border-transparent hover:border-default'
+                  ? 'bg-accent border-2 border-accent'
+                  : 'bg-hover border-2 border-transparent hover:border-default'
               }`}
             >
               <div className="flex items-center gap-3">

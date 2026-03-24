@@ -182,7 +182,7 @@ export function EnvCheck() {
         <p className="text-sm mb-4 text-secondary">{t.env.subtitle}</p>
       </motion.div>
       
-      <div className="flex-1 space-y-3 overflow-y-auto pb-4">
+      <div className="flex-1 space-y-3 overflow-y-auto px-2 pb-4 mr-2">
         {envItems.map((item, index) => (
           <motion.div
             key={item.name}

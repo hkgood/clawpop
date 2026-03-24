@@ -4,24 +4,29 @@
 
 :root {
   /* 暗色模式 (默认) */
-  --bg-primary: #0A0A0A;
-  --bg-secondary: #141414;
-  --bg-card: rgba(20, 20, 20, 0.9);
+  --bg-primary: rgba(13, 17, 23, 0.95);
+  --bg-secondary: rgba(22, 27, 34, 0.95);
+  --bg-card: rgba(30, 37, 46, 0.9);
   --bg-hover: rgba(255, 255, 255, 0.08);
-  --text-primary: #FAFAFA;
-  --text-secondary: #A0A0A0;
-  --text-muted: #666666;
+  --text-primary: #E5E7EB;
+  --text-secondary: #9CA3AF;
+  --text-muted: #6B7280;
   --border-color: rgba(255, 255, 255, 0.08);
-  --border-light: rgba(255, 255, 255, 0.05);
-  --brand: #FAFAFA;
-  --brand-hover: #E5E5E5;
-  --success: #FAFAFA;
-  --success-bg: rgba(250, 250, 250, 0.15);
-  --error: #FAFAFA;
-  --error-bg: rgba(250, 250, 250, 0.15);
-  --warning: #A0A0A0;
-  --warning-bg: rgba(160, 160, 160, 0.15);
-  /* 主按钮 - 两种模式下都是中性灰色 */
+  --border-light: rgba(255, 255, 255, 0.04);
+  --brand: #E5E7EB;
+  --brand-hover: #FFFFFF;
+  /* 高雅低饱和度蓝色 - 选中/高亮色 */
+  --accent: #6B8FAD;
+  --accent-hover: #7FA0BE;
+  --accent-bg: rgba(107, 143, 173, 0.2);
+  --accent-border: rgba(107, 143, 173, 0.4);
+  --success: #E5E7EB;
+  --success-bg: rgba(107, 143, 173, 0.15);
+  --error: #E5E7EB;
+  --error-bg: rgba(220, 100, 100, 0.15);
+  --warning: #9CA3AF;
+  --warning-bg: rgba(180, 160, 100, 0.15);
+  /* 主按钮 - 中性灰色 */
   --btn-primary-bg: #404040;
   --btn-primary-bg-hover: #505050;
   --btn-primary-text: #FFFFFF;
@@ -29,24 +34,29 @@
 
 .theme-light {
   /* 亮色模式 */
-  --bg-primary: #FAFAFA;
-  --bg-secondary: #FFFFFF;
-  --bg-card: rgba(255, 255, 255, 0.95);
+  --bg-primary: rgba(248, 250, 252, 0.95);
+  --bg-secondary: rgba(255, 255, 255, 0.98);
+  --bg-card: rgba(255, 255, 255, 0.98);
   --bg-hover: rgba(0, 0, 0, 0.04);
-  --text-primary: #1A1A1A;
-  --text-secondary: #666666;
-  --text-muted: #999999;
+  --text-primary: #1F2937;
+  --text-secondary: #6B7280;
+  --text-muted: #9CA3AF;
   --border-color: rgba(0, 0, 0, 0.08);
   --border-light: rgba(0, 0, 0, 0.04);
-  --brand: #1A1A1A;
-  --brand-hover: #333333;
-  --success: #1A1A1A;
-  --success-bg: rgba(26, 26, 26, 0.1);
-  --error: #1A1A1A;
-  --error-bg: rgba(26, 26, 26, 0.1);
-  --warning: #666666;
-  --warning-bg: rgba(102, 102, 102, 0.1);
-  /* 主按钮 - 两种模式下都是中性灰色 */
+  --brand: #1F2937;
+  --brand-hover: #374151;
+  /* 高雅低饱和度蓝色 */
+  --accent: #6B8FAD;
+  --accent-hover: #5A7D9C;
+  --accent-bg: rgba(107, 143, 173, 0.15);
+  --accent-border: rgba(107, 143, 173, 0.3);
+  --success: #1F2937;
+  --success-bg: rgba(107, 143, 173, 0.1);
+  --error: #1F2937;
+  --error-bg: rgba(220, 100, 100, 0.1);
+  --warning: #6B7280;
+  --warning-bg: rgba(180, 160, 100, 0.1);
+  /* 主按钮 - 中性灰色 */
   --btn-primary-bg: #505050;
   --btn-primary-bg-hover: #606060;
   --btn-primary-text: #FFFFFF;
@@ -66,10 +76,10 @@
 .bg-brand-20 { background-color: rgba(255, 255, 255, 0.2); }
 .bg-brand-30 { background-color: rgba(255, 255, 255, 0.3); }
 .bg-brand-40 { background-color: rgba(255, 255, 255, 0.4); }
+.bg-accent { background-color: var(--accent-bg); }
 .bg-success { background-color: var(--success-bg); }
 .bg-error { background-color: var(--error-bg); }
 .bg-warning { background-color: var(--warning-bg); }
-/* 主按钮背景 - 中性灰色，两种模式下都可见 */
 .bg-btn-primary { background-color: var(--btn-primary-bg); }
 .bg-btn-primary:hover { background-color: var(--btn-primary-bg-hover); }
 
@@ -78,19 +88,24 @@
 .text-secondary { color: var(--text-secondary); }
 .text-muted { color: var(--text-muted); }
 .text-brand { color: var(--brand); }
+.text-accent { color: var(--accent); }
 .text-success { color: var(--success); }
 .text-error { color: var(--error); }
 .text-warning { color: var(--warning); }
-/* 主按钮文字 - 白色 */
 .text-btn-primary { color: var(--btn-primary-text); }
 
 /* 边框类 */
 .border-default { border-color: var(--border-color); }
 .border-light { border-color: var(--border-light); }
 .border-brand { border-color: var(--brand); }
+.border-accent { border-color: var(--accent-border); }
 .border-success { border-color: var(--success); }
 .border-error { border-color: var(--error); }
 .border-warning { border-color: var(--warning); }
+
+/* 高亮/选中状态 */
+.ring-accent { box-shadow: 0 0 0 2px var(--accent-border); }
+.bg-accent-active { background-color: var(--accent-bg); }
 
 /* 字体层级 */
 .text-h1 { font-size: 1.5rem; font-weight: 700; }
@@ -130,22 +145,22 @@ body {
   background: transparent !important;
 }
 
-/* 滚动条 */
+/* 滚动条 - 更靠近边缘 */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
   background: transparent;
-  border-radius: 3px;
 }
 
 .theme-light ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(0, 0, 0, 0.02);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 3px;
 }
 
@@ -154,7 +169,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .theme-light ::-webkit-scrollbar-thumb:hover {
@@ -190,12 +205,8 @@ body {
 
 .input:focus {
   outline: none;
-  border-color: var(--brand);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
-}
-
-.theme-light .input:focus {
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
 }
 
 .input::placeholder {
@@ -215,6 +226,7 @@ body {
 .theme-light .text-secondary { color: var(--text-secondary); }
 .theme-light .text-muted { color: var(--text-muted); }
 .theme-light .text-brand { color: var(--brand); }
+.theme-light .text-accent { color: var(--accent); }
 .theme-light .text-success { color: var(--success); }
 .theme-light .text-error { color: var(--error); }
 .theme-light .text-warning { color: var(--warning); }

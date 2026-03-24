@@ -63,7 +63,7 @@ export function Success() {
         className="w-full max-w-md space-y-4 mb-8"
       >
         <div className="card p-4 flex items-center gap-4">
-          <div className="w-12 h-12 rounded bg-brand-20 flex items-center justify-center">
+          <div className="w-12 h-12 rounded bg-accent flex items-center justify-center">
             <Globe size={20} className="text-secondary" />
           </div>
           <div className="flex-1">

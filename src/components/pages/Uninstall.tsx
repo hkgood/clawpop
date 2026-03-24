@@ -182,14 +182,14 @@ export function Uninstall() {
             onClick={() => toggleOption(option.id)}
             className={`w-full p-4 rounded-xl text-left transition-all flex items-center gap-4 ${
               option.checked
-                ? 'bg-brand-20 border-2 border-brand'
+                ? 'bg-accent border-2 border-accent'
                 : 'bg-hover border-2 border-transparent hover:border-default'
             }`}
           >
             <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
               option.checked ? 'bg-brand-30' : 'bg-hover'
             }`}>
-              <option.icon size={20} className={option.checked ? 'text-brand' : 'text-secondary'} />
+              <option.icon size={20} className={option.checked ? 'text-accent' : 'text-secondary'} />
             </div>
             
             <div className="flex-1">

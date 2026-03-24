@@ -92,7 +92,7 @@ function App() {
   }
   
   return (
-    <div className="h-screen w-screen flex flex-col overflow-hidden rounded-[4px] bg-primary">
+    <div className="h-screen w-screen flex flex-col overflow-hidden rounded-xl bg-primary">
       {/* 自定义标题栏 */}
       <div 
         className="h-10 flex items-center justify-between px-4 select-none bg-secondary text-primary border-b border-light"
