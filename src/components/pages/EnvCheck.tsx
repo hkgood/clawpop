@@ -22,9 +22,9 @@ interface EnvItemProps {
 function EnvItem({ name, nameKey, Icon, status, version, message, fixCommand, action, onAction, t }: EnvItemProps) {
   const statusConfig = {
     checking: { color: 'text-secondary', IconComponent: Loader2, animate: true },
-    success: { color: 'text-success', IconComponent: CheckCircle2, animate: false },
-    warning: { color: 'text-warning', IconComponent: AlertCircle, animate: false },
-    error: { color: 'text-error', IconComponent: XCircle, animate: false },
+    success: { color: 'text-primary', IconComponent: CheckCircle2, animate: false },
+    warning: { color: 'text-secondary', IconComponent: AlertCircle, animate: false },
+    error: { color: 'text-primary', IconComponent: XCircle, animate: false },
   }
   
   const config = statusConfig[status]
@@ -35,36 +35,31 @@ function EnvItem({ name, nameKey, Icon, status, version, message, fixCommand, ac
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="flex items-center justify-between p-4 rounded-xl border border-default bg-card"
+      className="flex items-center justify-between bg-secondary px-4 py-3 rounded-lg"
     >
-      <div className="flex items-center gap-4">
-        <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-hover">
-          <Icon size={20} className="text-secondary" />
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 rounded flex items-center justify-center bg-hover">
+          <Icon size={16} className="text-secondary" />
         </div>
         <div>
-          <div className="font-medium text-primary">{displayName}</div>
-          {version && <div className="text-sm text-secondary">v{version}</div>}
-          {message && <div className={`text-sm ${status === 'error' ? 'text-error' : 'text-warning'}`}>{message}</div>}
+          <div className="text-sm font-medium text-primary">{displayName}</div>
+          {version && <div className="text-xs text-secondary">v{version}</div>}
+          {message && <div className="text-xs text-secondary">{message}</div>}
           {fixCommand && status !== 'success' && status !== 'checking' && (
-            <div className="mt-1">
-              <code className="text-xs px-2 py-1 rounded font-mono bg-hover text-secondary">
-                {fixCommand}
-              </code>
-            </div>
+            <code className="text-xs px-1.5 py-0.5 rounded bg-hover text-secondary font-mono">
+              {fixCommand}
+            </code>
           )}
         </div>
       </div>
       
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         {status === 'checking' ? (
-          <motion.div 
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-          >
-            <StatusIcon size={20} className="text-secondary" />
+          <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
+            <StatusIcon size={16} className="text-secondary" />
           </motion.div>
         ) : (
-          <StatusIcon size={20} className={config.color} />
+          <StatusIcon size={16} className={config.color} />
         )}
         
         {action && status !== 'checking' && status !== 'success' && (
@@ -82,7 +77,6 @@ export function EnvCheck() {
   const { t } = useTranslation()
   const [checking, setChecking] = useState(true)
   
-  // 环境检测
   useEffect(() => {
     const checkEnv = async () => {
       setChecking(true)
@@ -173,31 +167,32 @@ export function EnvCheck() {
   const canProceed = !checking && envCheck?.node && envCheck?.git && envCheck?.network
 
   return (
-    <div className="flex-1 flex flex-col px-8 py-6 overflow-hidden">
+    <div className="flex-1 flex flex-col px-4 py-4 overflow-hidden">
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
+        className="mb-4"
       >
-        <h2 className="text-2xl font-bold mb-2 text-primary">{t.env.title}</h2>
-        <p className="text-sm mb-4 text-secondary">{t.env.subtitle}</p>
+        <h2 className="text-base font-semibold text-primary">{t.env.title}</h2>
+        <p className="text-xs text-secondary">{t.env.subtitle}</p>
       </motion.div>
       
-      <div className="flex-1 space-y-3 overflow-y-auto px-2 pb-4 mr-2">
+      <div className="flex-1 space-y-2 overflow-y-auto">
         {envItems.map((item, index) => (
           <motion.div
             key={item.name}
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.1 }}
+            transition={{ delay: index * 0.05 }}
           >
             <EnvItem {...item} />
           </motion.div>
         ))}
       </div>
       
-      <div className="flex justify-between mt-8 pt-4 border-t border-light">
+      <div className="flex justify-between mt-4 pt-3 border-t border-light">
         <Button variant="ghost" onClick={() => setPage('welcome')}>
-          <ArrowLeft size={16} />
+          <ArrowLeft size={14} />
           {t.common.back}
         </Button>
         <Button 
@@ -205,7 +200,7 @@ export function EnvCheck() {
           onClick={() => setPage('config')}
         >
           {t.common.next}
-          <ArrowRight size={16} />
+          <ArrowRight size={14} />
         </Button>
       </div>
     </div>

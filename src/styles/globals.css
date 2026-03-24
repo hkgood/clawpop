@@ -187,9 +187,27 @@ body {
 /* 卡片 */
 .card {
   background: var(--bg-card);
-  border-radius: 2px;
+  border-radius: 8px;
   border: 1px solid var(--border-color);
   transition: all 0.15s ease;
+}
+
+/* 列表项 - 统一样式 */
+.list-item {
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 16px;
+  transition: all 0.15s ease;
+}
+
+.list-item-selected {
+  background: var(--accent-bg);
+  border: 2px solid var(--accent);
+}
+
+.list-item-hover {
+  background: var(--bg-hover);
+  border: 2px solid transparent;
 }
 
 /* 输入框 */

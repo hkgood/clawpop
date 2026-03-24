@@ -96,40 +96,38 @@ export function Config() {
   const canProceed = installConfig.model && installConfig.apiKey
 
   return (
-    <div className="flex-1 flex flex-col px-8 py-6 overflow-hidden">
+    <div className="flex-1 flex flex-col px-4 py-4 overflow-hidden">
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-6"
+        className="mb-4"
       >
-        <h2 className="text-h1 mb-2 text-primary">{t.config.title}</h2>
-        <p className="text-secondary">{t.config.subtitle}</p>
+        <h2 className="text-base font-semibold text-primary">{t.config.title}</h2>
+        <p className="text-xs text-secondary">{t.config.subtitle}</p>
       </motion.div>
       
-      <div className="flex-1 overflow-y-auto pr-2">
+      <div className="flex-1 overflow-y-auto space-y-4 pr-1">
       
       {/* 模型选择 */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="mb-8"
       >
-        <h3 className="text-h2 mb-4 flex items-center gap-2 text-primary">
-          <Bot size={18} />
+        <h3 className="text-sm font-medium mb-2 flex items-center gap-2 text-primary">
+          <Bot size={14} />
           {t.config.modelSelect}
         </h3>
         <div className="space-y-2">
           {modelIds.map((model) => (
             <motion.button
               key={model.id}
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => setInstallConfig({ model: model.id })}
-              className={`w-full p-4 rounded text-left transition-all ${
+              className={`w-full px-4 py-3 rounded-lg text-left transition-all text-sm ${
                 installConfig.model === model.id 
                   ? 'bg-accent border-2 border-accent' 
-                  : 'bg-hover border-2 border-transparent hover:border-default'
+                  : 'bg-secondary border-2 border-transparent'
               }`}
             >
               <div className="flex items-center justify-between">
@@ -137,24 +135,21 @@ export function Config() {
                   <div className="font-medium flex items-center gap-2 text-primary">
                     {modelNames[language][model.nameKey]}
                     {model.id === 'minimax-m2.5' && (
-                      <span className="px-2 py-0.5 text-xs bg-success text-success rounded-full">
+                      <span className="px-1.5 py-0.5 text-xs bg-accent text-btn-primary rounded">
                         {recommendText[language]}
                       </span>
                     )}
                   </div>
-                  <div className="text-caption text-secondary">{modelDescs[language][model.descKey]}</div>
+                  <div className="text-xs text-secondary">{modelDescs[language][model.descKey]}</div>
                 </div>
                 <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                   installConfig.model === model.id 
-                    ? 'border-btn-primary bg-btn-primary' 
+                    ? 'border-accent bg-accent' 
                     : 'border-default'
                 }`}>
                   {installConfig.model === model.id && (
-                    <motion.div 
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                    >
-                      <Check size={12} className="text-btn-primary" />
+                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}>
+                      <Check size={10} className="text-btn-primary" />
                     </motion.div>
                   )}
                 </div>
@@ -166,30 +161,21 @@ export function Config() {
       
       {/* API Key */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="mb-8"
       >
-        <h3 className="text-h2 mb-4 flex items-center gap-2 text-primary">
-          <Key size={18} />
+        <h3 className="text-sm font-medium mb-2 flex items-center gap-2 text-primary">
+          <Key size={14} />
           {t.config.apiKey}
           {apiKeyValid === true && (
-            <motion.span 
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="ml-2 px-2 py-0.5 text-xs bg-success text-success rounded-full flex items-center gap-1"
-            >
-              <Check size={10} /> {t.config.apiKeyValid}
+            <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="ml-1 px-1.5 py-0.5 text-xs bg-accent text-btn-primary rounded">
+              <Check size={10} />
             </motion.span>
           )}
           {apiKeyValid === false && (
-            <motion.span 
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="ml-2 px-2 py-0.5 text-xs bg-error text-error rounded-full flex items-center gap-1"
-            >
-              <X size={10} /> {t.config.apiKeyInvalid}
+            <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="ml-1 px-1.5 py-0.5 text-xs bg-error text-btn-primary rounded">
+              <X size={10} />
             </motion.span>
           )}
         </h3>
@@ -199,16 +185,10 @@ export function Config() {
           value={installConfig.apiKey}
           onChange={(e) => setInstallConfig({ apiKey: e.target.value })}
         />
-        <div className="mt-2 text-caption text-secondary flex items-center justify-between">
-          <a 
-            href="#" 
-            className="text-brand hover:underline inline-flex items-center gap-1"
-            onClick={(e) => {
-              e.preventDefault()
-            }}
-          >
+        <div className="mt-1.5 text-xs text-secondary flex items-center justify-between">
+          <a href="#" className="text-accent hover:underline inline-flex items-center gap-1" onClick={(e) => e.preventDefault()}>
             {t.config.getApiKey}
-            <ExternalLink size={12} />
+            <ExternalLink size={10} />
           </a>
           {apiKeyValid === false && (
             <span className="text-error text-xs">{t.config.invalidKey}</span>
@@ -218,31 +198,29 @@ export function Config() {
       
       {/* 消息通道 */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="mb-8"
       >
-        <h3 className="text-h2 mb-4 flex items-center gap-2 text-primary">
-          <MessageSquare size={18} />
+        <h3 className="text-sm font-medium mb-2 flex items-center gap-2 text-primary">
+          <MessageSquare size={14} />
           {t.config.channels}
         </h3>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2">
           {channels.map((channel) => (
             <motion.button
               key={channel.id}
-              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => toggleChannel(channel.id)}
-              className={`p-4 rounded text-left transition-all ${
+              className={`px-3 py-2.5 rounded-lg text-left transition-all ${
                 installConfig.channels.includes(channel.id)
                   ? 'bg-accent border-2 border-accent'
-                  : 'bg-hover border-2 border-transparent hover:border-default'
+                  : 'bg-secondary border-2 border-transparent'
               }`}
             >
-              <div className="flex items-center gap-3">
-                <span className="text-xl text-primary">{channel.icon}</span>
-                <span className="font-medium text-primary">{channelNames[language][channel.nameKey]}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm">{channel.icon}</span>
+                <span className="text-sm font-medium text-primary">{channelNames[language][channel.nameKey]}</span>
               </div>
             </motion.button>
           ))}
@@ -250,14 +228,14 @@ export function Config() {
       </motion.div>
       </div>
       
-      <div className="flex justify-between pt-4 border-t border-light">
+      <div className="flex justify-between mt-4 pt-3 border-t border-light">
         <Button variant="ghost" onClick={() => setPage('env')}>
-          <ArrowLeft size={16} />
+          <ArrowLeft size={14} />
           {t.common.back}
         </Button>
         <Button disabled={!canProceed} onClick={() => setPage('install')}>
           {t.common.next}
-          <ArrowRight size={16} />
+          <ArrowRight size={14} />
         </Button>
       </div>
     </div>

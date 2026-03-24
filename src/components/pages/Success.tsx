@@ -26,70 +26,70 @@ export function Success() {
   }
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-8 py-6">
+    <div className="flex-1 flex flex-col items-center justify-center px-4 py-4">
       {/* 庆祝动画 */}
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-        className="w-20 h-20 rounded-sm bg-btn-primary flex items-center justify-center mb-6"
+        className="w-16 h-16 rounded-lg bg-btn-primary flex items-center justify-center mb-4"
       >
-        <Sparkles size={40} className="text-btn-primary" />
+        <Sparkles size={32} className="text-btn-primary" />
       </motion.div>
       
       <motion.h1
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="text-h1 text-center mb-4 text-primary"
+        transition={{ delay: 0.1 }}
+        className="text-base font-semibold text-center mb-2 text-primary"
       >
         {t.success.title}
       </motion.h1>
       
       <motion.p
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="text-body text-center mb-8 text-secondary"
+        transition={{ delay: 0.2 }}
+        className="text-sm text-center mb-4 text-secondary"
       >
         {t.success.subtitle}
       </motion.p>
       
       {/* 信息卡片 */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="w-full max-w-md space-y-4 mb-8"
+        transition={{ delay: 0.3 }}
+        className="w-full max-w-sm space-y-2 mb-4"
       >
-        <div className="card p-4 flex items-center gap-4">
-          <div className="w-12 h-12 rounded bg-accent flex items-center justify-center">
-            <Globe size={20} className="text-secondary" />
+        <div className="bg-secondary rounded-lg p-3 flex items-center gap-3">
+          <div className="w-8 h-8 rounded bg-accent flex items-center justify-center">
+            <Globe size={14} className="text-btn-primary" />
           </div>
           <div className="flex-1">
-            <div className="text-sm text-secondary">{t.success.consoleUrl}</div>
+            <div className="text-xs text-secondary">{t.success.consoleUrl}</div>
             <button 
               onClick={handleCopyUrl}
-              className="font-mono text-secondary hover:text-primary hover:underline flex items-center gap-1 group"
+              className="text-xs font-mono text-accent hover:underline flex items-center gap-1 group"
             >
               {consoleUrl}
               {copied ? (
-                <Check size={14} className="text-success" />
+                <Check size={10} className="text-primary" />
               ) : (
-                <Copy size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Copy size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
               )}
             </button>
           </div>
         </div>
         
-        <div className="card p-4 flex items-center gap-4">
-          <div className="w-12 h-12 rounded bg-success flex items-center justify-center">
-            <MessageCircle size={20} className="text-success" />
+        <div className="bg-secondary rounded-lg p-3 flex items-center gap-3">
+          <div className="w-8 h-8 rounded bg-accent flex items-center justify-center">
+            <MessageCircle size={14} className="text-btn-primary" />
           </div>
           <div className="flex-1">
-            <div className="text-sm text-secondary">{t.success.nextStep}</div>
-            <div className="text-sm text-primary">
-              {t.success.sendCmd} <code className="px-1.5 py-0.5 bg-hover rounded text-brand">{t.success.startCmd}</code> {t.success.toStart}
+            <div className="text-xs text-secondary">{t.success.nextStep}</div>
+            <div className="text-xs text-primary">
+              {t.success.sendCmd} <code className="px-1 py-0.5 bg-hover rounded text-xs text-primary">{t.success.startCmd}</code> {t.success.toStart}
             </div>
           </div>
         </div>
@@ -97,17 +97,17 @@ export function Success() {
       
       {/* 操作按钮 */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="flex gap-4"
+        transition={{ delay: 0.4 }}
+        className="flex gap-2"
       >
         <Button onClick={handleOpenDashboard}>
-          <Globe size={16} />
+          <Globe size={14} />
           {t.success.openConsole}
         </Button>
         <Button variant="secondary" onClick={reset}>
-          <RefreshCw size={16} />
+          <RefreshCw size={14} />
           {t.success.reinstall}
         </Button>
       </motion.div>
@@ -116,18 +116,18 @@ export function Success() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.8 }}
-        className="mt-12 text-sm text-center text-secondary"
+        transition={{ delay: 0.5 }}
+        className="mt-4 text-xs text-center text-secondary"
       >
         <p>{language === 'zh' ? '如有问题，请查看' : 'For help, check'}</p>
         <a 
           href="https://docs.openclaw.ai" 
           target="_blank"
           rel="noopener noreferrer"
-          className="text-secondary hover:text-primary hover:underline inline-flex items-center gap-1"
+          className="text-accent hover:underline inline-flex items-center gap-1"
         >
           {t.success.docs}
-          <ExternalLink size={12} />
+          <ExternalLink size={10} />
         </a>
       </motion.div>
     </div>

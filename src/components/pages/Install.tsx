@@ -36,9 +36,7 @@ export function Install() {
     
     try {
       await invoke('cancel_install')
-    } catch {
-      // ignore
-    }
+    } catch {}
     
     setTimeout(() => {
       setIsInstalling(false)
@@ -117,17 +115,17 @@ export function Install() {
   }
 
   return (
-    <div className="flex-1 flex flex-col px-8 py-6">
+    <div className="flex-1 flex flex-col px-4 py-4">
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between"
+        className="flex items-center justify-between mb-4"
       >
         <div>
-          <h2 className="text-2xl font-bold mb-2 text-primary">
+          <h2 className="text-base font-semibold text-primary">
             {isInstalling ? t.install.title : t.install.titleDone}
           </h2>
-          <p className="text-secondary">
+          <p className="text-xs text-secondary">
             {installProgress?.message || t.install.subtitle}
           </p>
         </div>
@@ -137,47 +135,51 @@ export function Install() {
             variant="ghost" 
             onClick={handleCancel}
             disabled={isCancelling}
-            className="text-error hover:text-error"
+            className="text-secondary"
           >
             {isCancelling ? (
-              <Loader2 size={16} className="animate-spin" />
+              <Loader2 size={14} className="animate-spin" />
             ) : (
-              <X size={16} />
+              <X size={14} />
             )}
-            取消
           </Button>
         )}
       </motion.div>
       
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="my-6"
+        className="mb-3"
       >
         <Progress value={progressValue} showPercentage />
       </motion.div>
       
-      <div className="mb-6 space-y-2">
+      {/* 步骤列表 - 与配置页选中样式一致，使用蓝灰色 */}
+      <div className="mb-3 space-y-2">
         {steps.map((step, index) => {
           const status = getStepStatus(index)
           return (
           <motion.div
             key={step.id}
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.05 }}
-            className={`flex items-center gap-3 p-3 rounded-lg ${
-              status.active ? 'bg-brand-30' : 'bg-card'
+            className={`px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm ${
+              status.active 
+                ? 'bg-accent' 
+                : status.done 
+                  ? 'bg-secondary' 
+                  : 'bg-secondary'
             }`}
           >
             {status.done ? (
-              <CheckCircle2 size={18} className="text-success" />
+              <CheckCircle2 size={14} className="text-primary" />
             ) : status.active ? (
-              <Loader2 size={18} className="text-brand animate-spin" />
+              <Loader2 size={14} className="text-btn-primary animate-spin" />
             ) : (
-              <Circle size={18} className="text-secondary" />
+              <Circle size={14} className="text-secondary" />
             )}
-            <span className={status.active ? 'text-primary' : 'text-secondary'}>
+            <span className={status.active ? 'text-btn-primary' : 'text-primary'}>
               {step.name}
             </span>
           </motion.div>
@@ -185,14 +187,15 @@ export function Install() {
         })}
       </div>
       
-      <div className="flex-1 bg-black/30 rounded-xl p-4 font-mono text-sm overflow-y-auto" ref={logContainerRef}>
+      {/* 日志输出 */}
+      <div className="flex-1 bg-secondary rounded-lg p-3 font-mono text-xs overflow-y-auto" ref={logContainerRef}>
         {logs.length > 0 && (
           <div className="flex justify-end mb-2">
             <button
               onClick={handleCopyLogs}
               className="flex items-center gap-1 text-xs text-secondary hover:text-primary transition-colors"
             >
-              {copied ? <Check size={12} className="text-success" /> : <Copy size={12} />}
+              {copied ? <Check size={10} className="text-accent" /> : <Copy size={10} />}
               {copied ? t.install.copied : t.install.copyLogs}
             </button>
           </div>
@@ -201,9 +204,9 @@ export function Install() {
           <div 
             key={index} 
             className={`${
-              log.includes('✓') ? 'text-success' :
-              log.includes('>') ? 'text-brand' :
-              log.includes('🎉') ? 'text-success font-bold' :
+              log.includes('✓') ? 'text-primary' :
+              log.includes('>') ? 'text-accent' :
+              log.includes('🎉') ? 'text-primary font-bold' :
               log.includes('✗') ? 'text-error' :
               'text-secondary'
             }`}
@@ -217,12 +220,12 @@ export function Install() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-4 p-4 bg-error border border-error rounded-xl"
+          className="mt-3 p-3 bg-error rounded-lg"
         >
-          <div className="text-error font-medium">{t.install.error}</div>
-          <div className="text-sm text-secondary mt-1">{installError}</div>
+          <div className="text-sm font-medium text-primary">{t.install.error}</div>
+          <div className="text-xs text-secondary mt-1">{installError}</div>
           <Button 
-            className="mt-3" 
+            className="mt-2" 
             onClick={() => setInstallError(null)}
           >
             {t.install.retry}
