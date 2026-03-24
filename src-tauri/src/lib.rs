@@ -1,4 +1,4 @@
-use tauri::{Manager, WebviewWindow};
+use tauri::WebviewWindow;
 
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -17,7 +17,7 @@ fn close_window(window: WebviewWindow) {
 
 #[tauri::command]
 fn start_dragging(window: WebviewWindow) {
-    window.start_drag_move().unwrap();
+    window.start_dragging().unwrap();
 }
 
 #[tauri::command]
