@@ -147,7 +147,7 @@ function App() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-bg-secondary rounded-2xl p-6 max-w-sm mx-4 shadow-2xl"
+              className="bg-secondary border border-default rounded-xl p-6 max-w-sm mx-4 shadow-2xl"
               onClick={e => e.stopPropagation()}
             >
               <h3 className="text-lg font-bold mb-4 text-primary">快捷键</h3>
@@ -171,7 +171,7 @@ function App() {
               </div>
               <button
                 onClick={() => setShowHelp(false)}
-                className="mt-4 w-full py-2 bg-btn-primary text-btn-primary rounded-lg hover:opacity-90 transition-colors"
+                className="mt-4 w-full py-2 bg-btn-primary text-btn-primary rounded hover:opacity-90 transition-colors"
               >
                 知道了
               </button>
