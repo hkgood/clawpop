@@ -1,5 +1,4 @@
-use tauri::{WebviewWindow, Manager};
-use tauri::Emitter;
+use tauri::WebviewWindow;
 
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -35,7 +34,7 @@ fn get_service_status() -> String {
 fn get_version() -> serde_json::Value {
     serde_json::json!({
         "installed": true,
-        "version": "0.3.6"
+        "version": "0.3.7"
     })
 }
 
@@ -75,18 +74,6 @@ fn uninstall(options: Vec<String>) -> Result<(), String> {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .setup(|app| {
-            // Configure window for transparent background on macOS
-            #[cfg(target_os = "macos")]
-            {
-                if let Some(window) = app.get_webview_window("main") {
-                    use tauri::WebviewWindowExt;
-                    // Set window to be transparent
-                    let _ = window.set_background_color(0, 0, 0, 0);
-                }
-            }
-            Ok(())
-        })
         .invoke_handler(tauri::generate_handler![
             greet,
             minimize_window,
