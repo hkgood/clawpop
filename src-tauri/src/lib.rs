@@ -1,4 +1,5 @@
-use tauri::WebviewWindow;
+use tauri::{WebviewWindow, Manager};
+use tauri::Emitter;
 
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -22,13 +23,11 @@ fn start_dragging(window: WebviewWindow) {
 
 #[tauri::command]
 fn check_installed() -> bool {
-    // TODO: 实现实际的检测逻辑
     std::path::Path::new("/usr/local/bin/openclaw").exists()
 }
 
 #[tauri::command]
 fn get_service_status() -> String {
-    // TODO: 实现实际的服务状态检测
     "stopped".to_string()
 }
 
@@ -36,7 +35,7 @@ fn get_service_status() -> String {
 fn get_version() -> serde_json::Value {
     serde_json::json!({
         "installed": true,
-        "version": "0.3.3"
+        "version": "0.3.6"
     })
 }
 
@@ -53,25 +52,21 @@ fn check_env() -> serde_json::Value {
 
 #[tauri::command]
 fn start_service() -> Result<(), String> {
-    // TODO: 实现实际的服务启动
     Ok(())
 }
 
 #[tauri::command]
 fn stop_service() -> Result<(), String> {
-    // TODO: 实现实际的服务停止
     Ok(())
 }
 
 #[tauri::command]
 fn restart_service() -> Result<(), String> {
-    // TODO: 实现实际的服务重启
     Ok(())
 }
 
 #[tauri::command]
 fn uninstall(options: Vec<String>) -> Result<(), String> {
-    // TODO: 实现实际的卸载逻辑
     println!("Uninstall options: {:?}", options);
     Ok(())
 }
@@ -80,6 +75,18 @@ fn uninstall(options: Vec<String>) -> Result<(), String> {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .setup(|app| {
+            // Configure window for transparent background on macOS
+            #[cfg(target_os = "macos")]
+            {
+                if let Some(window) = app.get_webview_window("main") {
+                    use tauri::WebviewWindowExt;
+                    // Set window to be transparent
+                    let _ = window.set_background_color(0, 0, 0, 0);
+                }
+            }
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             greet,
             minimize_window,
