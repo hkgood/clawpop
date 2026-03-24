@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { ReactNode } from 'react'
+import { useAppStore } from '../../stores/appStore'
 
 interface ButtonProps {
   children: ReactNode
@@ -20,25 +21,25 @@ export function Button({
   onClick,
   type = 'button',
 }: ButtonProps) {
-  const baseStyles = 'rounded-xl font-semibold transition-all duration-150 flex items-center justify-center gap-2'
+  const baseStyles = 'rounded-sm font-medium transition-all duration-150 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-white/20'
   
+  // 主按钮使用固定灰色背景 + 白色文字，在任何主题下都清晰可见
   const variants = {
-    primary: 'btn-gradient text-white',
-    secondary: 'bg-transparent border border-white/20 text-white hover:bg-white/10',
-    ghost: 'bg-transparent text-text-secondary hover:text-white',
+    primary: 'bg-btn-primary text-btn-primary hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed',
+    secondary: 'bg-transparent border border-default text-secondary hover:bg-hover hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed',
+    ghost: 'bg-transparent text-secondary hover:text-primary hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed',
   }
   
   const sizes = {
-    sm: 'px-4 py-2 text-sm',
-    md: 'px-6 py-3 text-base',
-    lg: 'px-8 py-4 text-lg',
+    sm: 'px-3 py-1.5 text-xs',
+    md: 'px-4 py-2 text-sm',
+    lg: 'px-6 py-3 text-base',
   }
 
   return (
     <motion.button
-      whileHover={{ scale: 1.02, y: -2 }}
-      whileTap={{ scale: 0.98 }}
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className} disabled:opacity-50 disabled:cursor-not-allowed`}
+      whileTap={{ scale: disabled ? 1 : 0.98 }}
+      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
       disabled={disabled}
       onClick={onClick}
       type={type}

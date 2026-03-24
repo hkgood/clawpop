@@ -13,21 +13,21 @@ export function Input({ label, error, className = '', type = 'text', ...props }:
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-text-secondary mb-2">
+        <label className="block text-sm font-medium text-secondary mb-2">
           {label}
         </label>
       )}
       <div className="relative">
         <input
           type={isPassword && showPassword ? 'text' : type}
-          className={`input w-full pr-10 ${error ? 'border-status-error' : ''} ${className}`}
+          className={`input w-full pr-10 ${error ? 'border-error' : ''} ${className}`}
           {...props}
         />
         {isPassword && (
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-white"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-primary"
           >
             {showPassword ? (
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -46,7 +46,7 @@ export function Input({ label, error, className = '', type = 'text', ...props }:
         <motion.p 
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-1 text-sm text-status-error"
+          className="mt-1 text-sm text-error"
         >
           {error}
         </motion.p>

@@ -12,7 +12,7 @@ export function Card({ children, className = '', hover = false }: CardProps) {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`card p-4 ${hover ? 'hover:border-white/20 transition-colors cursor-pointer' : ''} ${className}`}
+      className={`card p-4 ${hover ? 'hover:border-default transition-colors cursor-pointer' : ''} ${className}`}
     >
       {children}
     </motion.div>

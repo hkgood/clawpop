@@ -14,13 +14,13 @@ export function Sidebar() {
   const { currentPage, setPage } = useAppStore()
 
   return (
-    <div className="w-20 h-full bg-bg-secondary/80 backdrop-blur-xl flex flex-col items-center py-6 border-r border-white/5">
+    <div className="w-20 h-full bg-bg-secondary/80 backdrop-blur-xl flex flex-col items-center py-6 border-r border-light">
       <motion.div 
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-start to-brand-end flex items-center justify-center mb-8"
+        className="w-10 h-10 rounded-xl bg-btn-primary flex items-center justify-center mb-8"
       >
-        <span className="text-white font-bold text-sm">CP</span>
+        <span className="text-btn-primary font-bold text-sm">CP</span>
       </motion.div>
       
       <nav className="flex-1 flex flex-col gap-2">
@@ -36,8 +36,8 @@ export function Sidebar() {
               onClick={() => setPage(item.id)}
               className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
                 isActive 
-                  ? 'bg-brand-start/20 text-brand-start' 
-                  : 'text-text-secondary hover:bg-white/5 hover:text-white'
+                  ? 'bg-brand-20 text-brand' 
+                  : 'text-secondary hover:bg-hover hover:text-primary'
               }`}
             >
               <Icon size={20} strokeWidth={isActive ? 2.5 : 1.5} />
