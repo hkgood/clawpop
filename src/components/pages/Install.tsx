@@ -137,7 +137,7 @@ export function Install() {
           <h2 className="text-2xl font-bold mb-2">
             {isInstalling ? t.install.title : t.install.titleDone}
           </h2>
-          <p className="text-text-secondary">
+          <p className="text-secondary">
             {installProgress?.message || t.install.subtitle}
           </p>
         </div>
@@ -180,17 +180,17 @@ export function Install() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.05 }}
             className={`flex items-center gap-3 p-3 rounded-lg ${
-              status.active ? 'bg-brand-start/10' : 'bg-white/5'
+              status.active ? 'bg-brand/30' : 'bg-card'
             }`}
           >
             {status.done ? (
               <CheckCircle2 size={18} className="text-status-success" />
             ) : status.active ? (
-              <Loader2 size={18} className="text-brand-start animate-spin" />
+              <Loader2 size={18} className="text-brand animate-spin" />
             ) : (
-              <Circle size={18} className="text-text-secondary" />
+              <Circle size={18} className="text-secondary" />
             )}
-            <span className={status.active ? 'text-white' : 'text-text-secondary'}>
+            <span className={status.active ? 'text-white' : 'text-secondary'}>
               {step.name}
             </span>
           </motion.div>
@@ -204,7 +204,7 @@ export function Install() {
           <div className="flex justify-end mb-2">
             <button
               onClick={handleCopyLogs}
-              className="flex items-center gap-1 text-xs text-text-secondary hover:text-white transition-colors"
+              className="flex items-center gap-1 text-xs text-secondary hover:text-white transition-colors"
             >
               {copied ? <Check size={12} className="text-status-success" /> : <Copy size={12} />}
               {copied ? t.install.copied : t.install.copyLogs}
@@ -216,10 +216,10 @@ export function Install() {
             key={index} 
             className={`${
               log.includes('✓') ? 'text-status-success' :
-              log.includes('>') ? 'text-brand-start' :
+              log.includes('>') ? 'text-brand' :
               log.includes('🎉') ? 'text-status-success font-bold' :
               log.includes('✗') ? 'text-status-error' :
-              'text-text-secondary'
+              'text-secondary'
             }`}
           >
             {log || '\u00A0'}
@@ -235,7 +235,7 @@ export function Install() {
           className="mt-4 p-4 bg-status-error/20 border border-status-error rounded-xl"
         >
           <div className="text-status-error font-medium">{t.install.error}</div>
-          <div className="text-sm text-text-secondary mt-1">{installError}</div>
+          <div className="text-sm text-secondary mt-1">{installError}</div>
           <Button 
             className="mt-3" 
             onClick={() => setInstallError(null)}

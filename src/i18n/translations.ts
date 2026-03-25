@@ -9,6 +9,17 @@ export interface Translations {
     button: string
     uninstall: string
   }
+  // Welcome extra
+  welcomeExtra: {
+    checking: string
+    openConsole: string
+    openConsoleDesc: string
+    startService: string
+    startServiceDesc: string
+    reinstall: string
+    uninstall: string
+    notInstalled: string
+  }
   // EnvCheck
   env: {
     title: string
@@ -31,6 +42,7 @@ export interface Translations {
     subtitle: string
     modelSelect: string
     apiKey: string
+    invalidKey: string
     apiKeyPlaceholder: string
     apiKeyValid: string
     apiKeyInvalid: string
@@ -55,6 +67,8 @@ export interface Translations {
     copied: string
     error: string
     retry: string
+    startLog: string
+    progress: string
   }
   // Success
   success: {
@@ -63,6 +77,8 @@ export interface Translations {
     consoleUrl: string
     nextStep: string
     startCmd: string
+    sendCmd: string
+    toStart: string
     openConsole: string
     reinstall: string
     docs: string
@@ -97,12 +113,47 @@ export interface Translations {
     error: string
     success: string
   }
+  // Settings
+  settings: {
+    title: string
+    service: string
+    serviceStatus: string
+    manageOpenClaw: string
+    running: string
+    stopped: string
+    checking: string
+    start: string
+    stop: string
+    notInstalled: string
+    configBackup: string
+    importExport: string
+    importExportDesc: string
+    back: string
+    invalidConfig: string
+    appearance: string
+    theme: string
+    themeDark: string
+    themeLight: string
+    interfaceLang: string
+    restart: string
+    themeTip: string
+    langZh: string
+    langEn: string
+  }
+  // ProgressBar
+  progressBar: {
+    welcome: string
+    env: string
+    config: string
+    install: string
+    success: string
+  }
 }
 
 export const translations: Record<Language, Translations> = {
   zh: {
     welcome: {
-      title: 'clawpop',
+      title: 'ClawPop',
       subtitle: '让安装 OpenClaw 变得像打开 App 一样简单',
       slogan: '「啪嗒一下，装好了」',
       button: '开始使用',
@@ -129,6 +180,7 @@ export const translations: Record<Language, Translations> = {
       modelSelect: '选择模型',
       apiKey: 'API Key',
       apiKeyPlaceholder: '输入你的 API Key',
+      invalidKey: 'Key 长度需大于 10 位',
       apiKeyValid: '格式正确',
       apiKeyInvalid: '格式错误',
       getApiKey: '获取 API Key',
@@ -151,6 +203,8 @@ export const translations: Record<Language, Translations> = {
       copied: '已复制',
       error: '安装失败',
       retry: '重试',
+      startLog: '> 开始安装 OpenClaw...',
+      progress: '进度',
     },
     success: {
       title: '安装成功!',
@@ -158,6 +212,8 @@ export const translations: Record<Language, Translations> = {
       consoleUrl: '控制台地址',
       nextStep: '下一步',
       startCmd: '/start',
+      sendCmd: '在控制台发送',
+      toStart: '开始对话',
       openConsole: '打开控制台',
       reinstall: '重新安装',
       docs: 'OpenClaw 文档',
@@ -190,10 +246,53 @@ export const translations: Record<Language, Translations> = {
       error: '错误',
       success: '成功',
     },
+    welcomeExtra: {
+      checking: '检测安装状态...',
+      openConsole: '打开控制台',
+      openConsoleDesc: '立即使用 OpenClaw',
+      startService: '启动服务',
+      startServiceDesc: '开始使用 OpenClaw',
+      reinstall: '重新安装',
+      uninstall: '卸载',
+      notInstalled: '未安装',
+    },
+    settings: {
+      title: '设置',
+      service: '服务',
+      manageOpenClaw: '管理你的 OpenClaw',
+      serviceStatus: '服务状态',
+      running: '运行中',
+      stopped: '已停止',
+      checking: '检测中...',
+      start: '启动',
+      stop: '停止',
+      notInstalled: '请先安装 OpenClaw',
+      configBackup: '配置备份',
+      importExport: '导入/导出配置',
+      importExportDesc: '备份或恢复你的设置',
+      back: '返回',
+      invalidConfig: '配置文件格式错误',
+      appearance: '外观',
+      theme: '主题',
+      themeDark: '深色',
+      themeLight: '浅色',
+      interfaceLang: '界面语言',
+      restart: '重启',
+      themeTip: '💡 提示：主题和语言可在窗口顶部标题栏直接切换',
+      langZh: '中文',
+      langEn: 'English',
+    },
+    progressBar: {
+      welcome: '欢迎',
+      env: '环境',
+      config: '配置',
+      install: '安装',
+      success: '完成',
+    },
   },
   en: {
     welcome: {
-      title: 'clawpop',
+      title: 'ClawPop',
       subtitle: 'Install OpenClaw as easily as opening an App',
       slogan: '"Snap! It\'s installed"',
       button: 'Get Started',
@@ -220,6 +319,7 @@ export const translations: Record<Language, Translations> = {
       modelSelect: 'Select Model',
       apiKey: 'API Key',
       apiKeyPlaceholder: 'Enter your API Key',
+      invalidKey: 'Key must be longer than 10 characters',
       apiKeyValid: 'Valid format',
       apiKeyInvalid: 'Invalid format',
       getApiKey: 'Get API Key',
@@ -242,6 +342,8 @@ export const translations: Record<Language, Translations> = {
       copied: 'Copied',
       error: 'Installation Failed',
       retry: 'Retry',
+      startLog: '> Installing OpenClaw...',
+      progress: 'Progress',
     },
     success: {
       title: 'Installation Complete!',
@@ -249,6 +351,8 @@ export const translations: Record<Language, Translations> = {
       consoleUrl: 'Console URL',
       nextStep: 'Next Step',
       startCmd: '/start',
+      sendCmd: 'Send',
+      toStart: 'to start',
       openConsole: 'Open Console',
       reinstall: 'Reinstall',
       docs: 'OpenClaw Docs',
@@ -280,6 +384,49 @@ export const translations: Record<Language, Translations> = {
       loading: 'Loading...',
       error: 'Error',
       success: 'Success',
+    },
+    welcomeExtra: {
+      checking: 'Checking installation...',
+      openConsole: 'Open Console',
+      openConsoleDesc: 'Use OpenClaw now',
+      startService: 'Start Service',
+      startServiceDesc: 'Start using OpenClaw',
+      reinstall: 'Reinstall',
+      uninstall: 'Uninstall',
+      notInstalled: 'Not Installed',
+    },
+    settings: {
+      title: 'Settings',
+      manageOpenClaw: 'Manage your OpenClaw',
+      service: 'Service',
+      serviceStatus: 'Service Status',
+      running: 'Running',
+      stopped: 'Stopped',
+      checking: 'Checking...',
+      start: 'Start',
+      stop: 'Stop',
+      notInstalled: 'Please install OpenClaw first',
+      configBackup: 'Config Backup',
+      importExport: 'Import/Export Config',
+      importExportDesc: 'Backup or restore your settings',
+      back: 'Back',
+      invalidConfig: 'Invalid config file format',
+      appearance: 'Appearance',
+      theme: 'Theme',
+      themeDark: 'Dark',
+      themeLight: 'Light',
+      interfaceLang: 'Language',
+      restart: 'Restart',
+      langZh: '中文',
+      langEn: 'English',
+      themeTip: '💡 Tip: Theme and language can be switched in the title bar',
+    },
+    progressBar: {
+      welcome: 'Welcome',
+      env: 'Env',
+      config: 'Config',
+      install: 'Install',
+      success: 'Done',
     },
   },
 }

@@ -10,33 +10,24 @@ export function LanguageSelector({ className = '', showLabel = false }: Language
   const { language, setLanguage } = useTranslation()
   const { theme } = useAppStore()
   
+  const activeClass = theme === 'light' ? 'bg-brand text-white' : 'bg-white text-primary'
+  const inactiveClass = theme === 'light' ? 'text-secondary' : 'text-secondary'
+  
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       {showLabel && (
-        <span className={`text-sm ${theme === 'light' ? 'text-[#64748B]' : 'text-text-secondary'}`}>语言</span>
+        <span className="text-sm text-secondary">{language === 'zh' ? '语言' : 'Lang'}</span>
       )}
       <div className="flex gap-1">
         <button 
           onClick={() => setLanguage('zh')}
-          className={`px-3 py-1.5 rounded-lg text-sm transition-all ${
-            language === 'zh' 
-              ? 'bg-brand-start text-white' 
-              : theme === 'light'
-                ? 'text-[#64748B] hover:text-[#1E293B] hover:bg-black/10'
-                : 'text-text-secondary hover:text-white hover:bg-white/10'
-          }`}
+          className={`px-2 py-1 text-xs rounded-sm transition-all ${language === 'zh' ? activeClass : inactiveClass}`}
         >
-          中文
+          中
         </button>
         <button 
           onClick={() => setLanguage('en')}
-          className={`px-3 py-1.5 rounded-lg text-sm transition-all ${
-            language === 'en' 
-              ? 'bg-brand-start text-white' 
-              : theme === 'light'
-                ? 'text-[#64748B] hover:text-[#1E293B] hover:bg-black/10'
-                : 'text-text-secondary hover:text-white hover:bg-white/10'
-          }`}
+          className={`px-2 py-1 text-xs rounded-sm transition-all ${language === 'en' ? activeClass : inactiveClass}`}
         >
           EN
         </button>

@@ -8,14 +8,16 @@
 ![Windows](https://img.shields.io/badge/Windows-10+-blue)
 ![Tauri](https://img.shields.io/badge/Tauri-2.x-6929CF)
 ![React](https://img.shields.io/badge/React-18-61DAFB)
+![Version](https://img.shields.io/badge/version-0.2.3-blue)
 
 ## ✨ 特性
 
 - 🎨 **Arc 风格设计** - 精美现代的深色主题
-- 🚀 **一键安装** - 无需命令行知识
-- 🔄 **进度可视化** - 每一步都清晰可见
-- 🛡️ **错误恢复** - 安装失败可重试
-- 🌐 **跨平台** - 支持 macOS 和 Windows
+- 🚀 **一键安装** - 无需命令行知识，点点点就完成
+- 🔄 **进度可视化** - Git 克隆、npm 安装实时显示
+- 🛡️ **API Key 验证** - 真实调用模型 API 验证有效性
+- 🌐 **37+ 主流模型** - MiniMax、阿里云、Claude、DeepSeek、GPT...
+- 🔐 **安全可靠** - 安装失败可重试，不污染环境
 
 ## 🛠 技术栈
 
@@ -25,6 +27,10 @@
 - **动画**: Framer Motion
 - **状态**: Zustand
 - **后端**: Rust
+
+## 📸 界面预览
+
+![ClawPop 首页](screenshots/home.png)
 
 ## 🚀 快速开始
 
@@ -50,6 +56,13 @@ npm run tauri dev
 # 构建发布
 npm run tauri build
 ```
+
+### 下载安装包
+
+从 [Releases](https://github.com/hkgood/ClawPop/releases) 下载：
+
+- **macOS**: ClawPop_0.2.3_x64.dmg
+- **Windows**: ClawPop_0.2.3_x64-setup.exe
 
 ## 📁 项目结构
 
@@ -78,6 +91,22 @@ ClawPop/
  Logo    Node/Docker  模型/API   进度条   启动
  动画     Git/网络    通道       日志     引导
 ```
+
+### 支持的模型提供商
+
+| 提供商 | 模型 |
+|--------|------|
+| MiniMax | M2.5, M2.7, 高速版, 闪电版, 免费版 |
+| 阿里云 | Qwen Max/Plus/Turbo/Long, Qwen3.5, Qwen3, Coder |
+| Anthropic | Claude Haiku, Sonnet, Opus |
+| DeepSeek | V3, R1 |
+| Google | Gemini 2.0 Flash, 2.5 Pro |
+| OpenAI | GPT-4o, GPT-4o Mini, GPT-4 Turbo |
+| 小米 | MIMO v2 Pro/Flash/Omni |
+| Mistral | 7B, Small |
+| NVIDIA | Nemotron 3 Super (免费) |
+| StepFun | 3.5 Flash (免费) |
+| Hunter | Alpha (免费) |
 
 ## 🤝 贡献
 

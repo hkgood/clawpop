@@ -1,60 +1,52 @@
-import { motion } from 'framer-motion'
-import { Check, Circle } from 'lucide-react'
 import { useAppStore, Page } from '../../stores/appStore'
+import { useTranslation } from '../../i18n/useTranslation'
 
-const steps: { id: Page; label: string }[] = [
-  { id: 'welcome', label: '欢迎' },
-  { id: 'env', label: '环境' },
-  { id: 'config', label: '配置' },
-  { id: 'install', label: '安装' },
-  { id: 'success', label: '完成' },
-]
+// 安装流程页面才显示进度条
+const installPages: Page[] = ['welcome', 'env', 'config', 'install', 'success']
 
 export function ProgressBar() {
+  const { t } = useTranslation()
   const { currentPage, setPage } = useAppStore()
+  
+  // 非安装流程页面不显示进度条
+  if (!installPages.includes(currentPage)) {
+    return null
+  }
+  
+  const steps: { id: Page; label: string }[] = [
+    { id: 'welcome', label: t.progressBar.welcome },
+    { id: 'env', label: t.progressBar.env },
+    { id: 'config', label: t.progressBar.config },
+    { id: 'install', label: t.progressBar.install },
+    { id: 'success', label: t.progressBar.success },
+  ]
   
   const currentIndex = steps.findIndex(s => s.id === currentPage)
   
   return (
-    <div className="h-16 bg-bg-secondary/80 backdrop-blur-xl flex items-center justify-center px-8 border-t border-white/5">
-      <div className="flex items-center gap-2">
+    <div className="h-14 flex items-center justify-center px-8 border-t bg-secondary border-light">
+      <div className="flex items-center gap-1">
         {steps.map((step, index) => {
           const isActive = index === currentIndex
           const isCompleted = index < currentIndex
-          const isClickable = index <= currentIndex || step.id === 'welcome'
           
           return (
             <div key={step.id} className="flex items-center">
               <button
-                onClick={() => isClickable && setPage(step.id)}
-                disabled={!isClickable}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
+                onClick={() => setPage(step.id)}
+                className={`px-3 py-1 text-xs transition-all hover:underline ${
                   isActive 
-                    ? 'bg-brand-start/20 text-brand-start' 
+                    ? 'font-semibold text-primary' 
                     : isCompleted
-                    ? 'text-status-success hover:bg-white/5'
-                    : 'text-text-secondary hover:bg-white/5'
-                } ${isClickable ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+                    ? 'text-secondary'
+                    : 'text-muted'
+                }`}
               >
-                {isCompleted ? (
-                  <Check size={16} />
-                ) : isActive ? (
-                  <motion.div
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ repeat: Infinity, duration: 1.5 }}
-                  >
-                    <Circle size={16} className="fill-brand-start" />
-                  </motion.div>
-                ) : (
-                  <Circle size={16} />
-                )}
-                <span className="text-sm font-medium">{step.label}</span>
+                {step.label}
               </button>
               
               {index < steps.length - 1 && (
-                <div className={`w-8 h-0.5 mx-1 ${
-                  isCompleted ? 'bg-status-success' : 'bg-white/10'
-                }`} />
+                <span className="text-muted mx-1">/</span>
               )}
             </div>
           )

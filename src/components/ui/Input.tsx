@@ -13,7 +13,7 @@ export function Input({ label, error, className = '', type = 'text', ...props }:
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-text-secondary mb-2">
+        <label className="block text-sm font-medium text-secondary mb-2">
           {label}
         </label>
       )}
@@ -27,7 +27,7 @@ export function Input({ label, error, className = '', type = 'text', ...props }:
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-white"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-[FAFAFA]"
           >
             {showPassword ? (
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

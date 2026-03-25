@@ -3,31 +3,95 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: #0F172A;
-  --bg-secondary: #1E293B;
-  --bg-dark: #020617;
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --brand-start: #8B5CF6;
-  --brand-end: #06B6D4;
-  --card-bg: rgba(30, 41, 59, 0.8);
-  --card-border: rgba(255, 255, 255, 0.05);
+  /* 极简设计 - 暗色模式 (默认) */
+  --bg-primary: #0A0A0A;
+  --bg-secondary: #141414;
+  --bg-card: rgba(20, 20, 20, 0.9);
+  --bg-hover: rgba(255, 255, 255, 0.08);
+  --text-primary: #FAFAFA;
+  --text-secondary: #A0A0A0;
+  --text-muted: #666666;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-light: rgba(255, 255, 255, 0.05);
+  --brand: #FAFAFA;
+  --brand-hover: #E5E5E5;
+  --success: #FAFAFA;
+  --success-bg: rgba(250, 250, 250, 0.15);
+  --error: #FAFAFA;
+  --error-bg: rgba(250, 250, 250, 0.15);
+  --warning: #A0A0A0;
+  --warning-bg: rgba(160, 160, 160, 0.15);
+  --success-color: #FAFAFA;
+  --warning-color: #A0A0A0;
+  --error-color: #FAFAFA;
 }
 
 .theme-light {
-  --bg-primary: #F1F5F9;
+  /* 极简设计 - 亮色模式 */
+  --bg-primary: #FAFAFA;
   --bg-secondary: #FFFFFF;
-  --bg-dark: #E2E8F0;
-  --text-primary: #1E293B;
-  --text-secondary: #64748B;
-  --brand-start: #8B5CF6;
-  --brand-end: #06B6D4;
-  --card-bg: rgba(255, 255, 255, 0.9);
-  --card-border: rgba(0, 0, 0, 0.08);
-  --status-success: #10B981;
-  --status-error: #EF4444;
-  --status-warning: #F59E0B;
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --bg-hover: rgba(0, 0, 0, 0.04);
+  --text-primary: #1A1A1A;
+  --text-secondary: #666666;
+  --text-muted: #999999;
+  --border-color: rgba(0, 0, 0, 0.08);
+  --border-light: rgba(0, 0, 0, 0.04);
+  --brand: #1A1A1A;
+  --brand-hover: #333333;
+  --success: #1A1A1A;
+  --success-bg: rgba(26, 26, 26, 0.1);
+  --error: #1A1A1A;
+  --error-bg: rgba(26, 26, 26, 0.1);
+  --warning: #666666;
+  --warning-bg: rgba(102, 102, 102, 0.1);
+  --success-color: #1A1A1A;
+  --warning-color: #666666;
+  --error-color: #1A1A1A;
 }
+
+/* 语义化颜色类 - 自动适配亮/暗模式 */
+.bg-primary { background: var(--bg-primary); }
+.bg-secondary { background: var(--bg-secondary); }
+.bg-card { background: var(--bg-card); }
+.bg-hover { background: var(--bg-hover); }
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
+.border-default { border-color: var(--border-color); }
+.border-light { border-color: var(--border-light); }
+.text-brand { color: var(--brand); }
+.bg-brand { background: var(--brand); }
+.text-success { color: var(--success); }
+.text-error { color: var(--error); }
+.text-warning { color: var(--warning); }
+
+/* 状态背景类 */
+.bg-success { background: var(--success-bg); }
+.bg-error { background: var(--error-bg); }
+.bg-warning { background: var(--warning-bg); }
+
+/* 字体层级标准 */
+/* 页面大标题: 24px 粗体 */
+.text-h1 { font-size: 1.5rem; font-weight: 700; }
+/* 区块标题: 18px 中等 */
+.text-h2 { font-size: 1.125rem; font-weight: 500; }
+/* 正文: 16px 常规 */
+.text-body { font-size: 1rem; }
+/* 辅助文字: 14px */
+.text-caption { font-size: 0.875rem; }
+/* 最小文字: 12px */
+.text-xs { font-size: 0.75rem; }
+
+/* 圆角层级标准 */
+/* 小圆角: 4px - 标签、小按钮、状态点 */
+.rounded-sm { border-radius: 4px; }
+/* 中圆角: 8px - 输入框、小卡片 */
+.rounded { border-radius: 8px; }
+/* 大圆角: 12px - 大卡片、列表项 */
+.rounded-lg { border-radius: 12px; }
+/* 超大圆角: 16px - 模态框、弹出层 */
+.rounded-xl { border-radius: 16px; }
 
 /* 暗色主题默认 */
 body {
@@ -113,42 +177,46 @@ body {
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 }
 
-/* 渐变按钮 */
+/* 极简按钮 */
 .btn-gradient {
-  background: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%);
+  background: #1A1A1A;
   transition: all 0.15s ease;
 }
 
 .btn-gradient:hover {
-  filter: brightness(1.1);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+  background: #333333;
 }
 
 .btn-gradient:active {
   transform: scale(0.98);
 }
 
-/* 卡片样式 */
+.theme-light .btn-gradient {
+  background: #1A1A1A;
+}
+
+.theme-light .btn-gradient:hover {
+  background: #333333;
+}
+
+/* 极简卡片样式 */
 .card {
   background: var(--card-bg);
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  border-radius: 2px;  /* 极小圆角 */
   border: 1px solid var(--card-border);
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .theme-light .card {
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: none;
 }
 
 .card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(139, 92, 246, 0.3);
+  border-color: rgba(0, 0, 0, 0.15);
 }
 
 .theme-light .card:hover {
-  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15);
+  border-color: rgba(0, 0, 0, 0.1);
 }
 
 /* 输入框样式 */

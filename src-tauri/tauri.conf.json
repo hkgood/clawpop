@@ -10,6 +10,7 @@
     "frontendDist": "../dist"
   },
   "app": {
+    "macOSPrivateApi": true,
     "windows": [
       {
         "title": "ClawPop",
@@ -22,7 +23,8 @@
         "decorations": false,
         "transparent": true,
         "fullscreen": false,
-        "alwaysOnTop": false
+        "alwaysOnTop": false,
+        "dragDropEnabled": false
       }
     ],
     "security": {

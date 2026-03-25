@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { useTranslation } from '../../i18n/useTranslation'
 
 interface ProgressProps {
   value: number
@@ -8,33 +9,22 @@ interface ProgressProps {
 }
 
 export function Progress({ value, className = '', showLabel = true, showPercentage = false }: ProgressProps) {
+  const { t } = useTranslation()
   const clampedValue = Math.min(100, Math.max(0, value))
   
   return (
     <div className={`w-full ${className}`}>
-      <div className="h-3 bg-white/10 rounded-full overflow-hidden relative">
+      <div className="h-3 bg-brand/20 rounded-full overflow-hidden relative">
         <motion.div 
-          className="h-full rounded-full bg-gradient-to-r from-brand-start to-brand-end"
+          className="h-full rounded-full bg-brand"
           initial={{ width: 0 }}
           animate={{ width: `${clampedValue}%` }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
         />
-        {/* 脉冲动画效果 */}
-        {clampedValue > 0 && clampedValue < 100 && (
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-            animate={{ x: ['-100%', '100%'] }}
-            transition={{ 
-              duration: 1.5, 
-              repeat: Infinity, 
-              ease: 'linear' 
-            }}
-          />
-        )}
       </div>
       {(showLabel || showPercentage) && (
-        <div className="flex justify-between mt-2 text-sm text-text-secondary">
-          {showLabel && <span>进度</span>}
+        <div className="flex justify-between mt-2 text-sm text-secondary">
+          {showLabel && <span>{t.install.progress || 'Progress'}</span>}
           {showPercentage && <span>{Math.round(clampedValue)}%</span>}
         </div>
       )}

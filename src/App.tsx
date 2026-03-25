@@ -11,12 +11,33 @@ import { ProgressBar } from './components/ui/ProgressBar'
 import { LanguageSelector } from './components/ui/LanguageSelector'
 import { ThemeToggle } from './components/ui/ThemeToggle'
 import { useAppStore } from './stores/appStore'
+import { useTranslation } from './i18n/useTranslation'
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 
 function App() {
   const { currentPage, setPage, theme } = useAppStore()
+  const { t } = useTranslation()
   const [showHelp, setShowHelp] = useState(false)
+  const [serviceStatus, setServiceStatus] = useState<'running' | 'stopped'>('stopped')
+  const [isInstalled, setIsInstalled] = useState(false)
+  
+  // 获取服务状态
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const installed = await invoke<boolean>('check_installed')
+        setIsInstalled(installed)
+        if (installed) {
+          const status = await invoke<string>('get_service_status')
+          setServiceStatus(status as 'running' | 'stopped')
+        }
+      } catch {}
+    }
+    checkStatus()
+    const interval = setInterval(checkStatus, 10000)
+    return () => clearInterval(interval)
+  }, [])
   
   // 应用主题
   useEffect(() => {
@@ -69,23 +90,32 @@ function App() {
     invoke('minimize_window')
   }
   
+  const handleDragStart = () => {
+    invoke('start_dragging')
+  }
+  
   return (
-    <div className={`h-screen w-screen flex flex-col overflow-hidden rounded-[16px] ${
-      theme === 'light' 
-        ? 'bg-gradient-to-br from-[#F8FAFC] to-[#E2E8F0]' 
-        : 'bg-gradient-to-br from-bg-primary to-bg-dark'
-    }`}>
+    <div className={`h-screen w-screen flex flex-col overflow-hidden rounded-[4px] bg-primary`}>
       {/* 自定义标题栏 - 包含关闭按钮 */}
       <div 
-        className={`h-10 flex items-center justify-between px-4 select-none cursor-default ${
-          theme === 'light' 
-            ? 'bg-white/70 text-[#1E293B]' 
-            : 'bg-bg-secondary/50 text-white'
-        }`}
-        data-tauri-drag-region
+        className="h-10 flex items-center justify-between px-4 select-none bg-secondary text-primary border-b border-light"
+        onMouseDown={handleDragStart}
       >
-        <div className="flex items-center gap-2">
-          <span className={`text-xs ${theme === 'light' ? 'text-[#64748B]' : 'text-text-secondary'}`}>ClawPop</span>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-secondary">ClawPop</span>
+          {/* 状态指示器 */}
+          {isInstalled && (
+            <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-xs border ${
+              serviceStatus === 'running' 
+                ? 'border-default text-secondary'
+                : 'border-default text-muted'
+            }`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${
+                serviceStatus === 'running' ? 'bg-brand animate-pulse' : 'bg-muted'
+              }`} />
+              {serviceStatus === 'running' ? t.settings.running : t.settings.stopped}
+            </div>
+          )}
           <LanguageSelector />
           <ThemeToggle />
         </div>
@@ -94,8 +124,8 @@ function App() {
             onClick={handleMinimize}
             className={`w-6 h-6 rounded-md flex items-center justify-center transition-colors ${
               theme === 'light'
-                ? 'text-[#64748B] hover:bg-black/10 hover:text-[#1E293B]'
-                : 'text-text-secondary hover:bg-white/10 hover:text-white'
+                ? 'text-[#666666] hover:bg-black/10 hover:text-[#1A1A1A]'
+                : 'text-secondary hover:bg-hover hover:text-primary'
             }`}
             title="最小化 (⌘M)"
           >
@@ -105,8 +135,8 @@ function App() {
             onClick={() => setShowHelp(true)}
             className={`w-6 h-6 rounded-md flex items-center justify-center transition-colors ${
               theme === 'light'
-                ? 'text-[#64748B] hover:bg-black/10 hover:text-[#1E293B]'
-                : 'text-text-secondary hover:bg-white/10 hover:text-white'
+                ? 'text-[#666666] hover:bg-black/10 hover:text-[#1A1A1A]'
+                : 'text-secondary hover:bg-hover hover:text-primary'
             }`}
             title="帮助 (⌘?)"
           >
@@ -116,8 +146,8 @@ function App() {
             onClick={handleClose}
             className={`w-6 h-6 rounded-md flex items-center justify-center transition-colors ${
               theme === 'light'
-                ? 'text-[#64748B] hover:bg-status-error hover:text-white'
-                : 'text-text-secondary hover:bg-status-error/80 hover:text-white'
+                ? 'text-[#666666] hover:bg-status-error hover:text-primary'
+                : 'text-secondary hover:bg-status-error/80 hover:text-primary'
             }`}
           >
             <X size={14} />
@@ -143,27 +173,27 @@ function App() {
               onClick={e => e.stopPropagation()}
             >
               <h3 className="text-lg font-bold mb-4">快捷键</h3>
-              <div className="space-y-2 text-sm text-text-secondary">
+              <div className="space-y-2 text-sm text-secondary">
                 <div className="flex justify-between">
                   <span>返回上一步</span>
-                  <kbd className="px-2 py-1 bg-white/10 rounded text-xs">⌘ + .</kbd>
+                  <kbd className="px-2 py-1 bg-hover rounded text-xs">⌘ + .</kbd>
                 </div>
                 <div className="flex justify-between">
                   <span>确认 / 下一步</span>
-                  <kbd className="px-2 py-1 bg-white/10 rounded text-xs">Enter</kbd>
+                  <kbd className="px-2 py-1 bg-hover rounded text-xs">Enter</kbd>
                 </div>
                 <div className="flex justify-between">
                   <span>最小化窗口</span>
-                  <kbd className="px-2 py-1 bg-white/10 rounded text-xs">⌘ + M</kbd>
+                  <kbd className="px-2 py-1 bg-hover rounded text-xs">⌘ + M</kbd>
                 </div>
                 <div className="flex justify-between">
                   <span>显示帮助</span>
-                  <kbd className="px-2 py-1 bg-white/10 rounded text-xs">⌘ + ?</kbd>
+                  <kbd className="px-2 py-1 bg-hover rounded text-xs">⌘ + ?</kbd>
                 </div>
               </div>
               <button
                 onClick={() => setShowHelp(false)}
-                className="mt-4 w-full py-2 bg-brand-start text-white rounded-lg hover:bg-brand-start/80 transition-colors"
+                className="mt-4 w-full py-2 bg-brand-start text-primary rounded-lg hover:bg-brand-start/80 transition-colors"
               >
                 知道了
               </button>

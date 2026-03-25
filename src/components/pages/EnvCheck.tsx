@@ -23,7 +23,7 @@ function EnvItem({ name, nameKey, Icon, status, version, message, fixCommand, ac
   const { theme } = useAppStore()
   
   const statusConfig = {
-    checking: { color: theme === 'light' ? 'text-[#64748B]' : 'text-text-secondary', IconComponent: Loader2, animate: true },
+    checking: { color: theme === 'light' ? 'text-secondary' : 'text-text-secondary', IconComponent: Loader2, animate: true },
     success: { color: 'text-status-success', IconComponent: CheckCircle2, animate: false },
     warning: { color: 'text-status-warning', IconComponent: AlertCircle, animate: false },
     error: { color: 'text-status-error', IconComponent: XCircle, animate: false },
@@ -39,24 +39,24 @@ function EnvItem({ name, nameKey, Icon, status, version, message, fixCommand, ac
       animate={{ opacity: 1, x: 0 }}
       className={`flex items-center justify-between p-4 rounded-xl border ${
         theme === 'light' 
-          ? 'bg-white/80 border-[#E2E8F0]' 
+          ? 'bg-white/80 border-default' 
           : 'bg-white/5 border border-white/5'
       }`}
     >
       <div className="flex items-center gap-4">
         <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-          theme === 'light' ? 'bg-[#F1F5F9]' : 'bg-white/5'
+          theme === 'light' ? 'bg-hover' : 'bg-white/5'
         }`}>
-          <Icon size={20} className={theme === 'light' ? 'text-[#64748B]' : 'text-text-secondary'} />
+          <Icon size={20} className={theme === 'light' ? 'text-secondary' : 'text-text-secondary'} />
         </div>
         <div>
-          <div className={`font-medium ${theme === 'light' ? 'text-[#1E293B]' : ''}`}>{displayName}</div>
-          {version && <div className={`text-sm ${theme === 'light' ? 'text-[#64748B]' : 'text-text-secondary'}`}>v{version}</div>}
+          <div className={`font-medium ${theme === 'light' ? 'text-primary' : ''}`}>{displayName}</div>
+          {version && <div className={`text-sm ${theme === 'light' ? 'text-secondary' : 'text-text-secondary'}`}>v{version}</div>}
           {message && <div className={`text-sm ${status === 'error' ? 'text-status-error' : 'text-status-warning'}`}>{message}</div>}
           {fixCommand && status !== 'success' && status !== 'checking' && (
             <div className="mt-1">
               <code className={`text-xs px-2 py-1 rounded font-mono ${
-                theme === 'light' ? 'bg-[#F1F5F9] text-[#64748B]' : 'bg-black/30 text-text-secondary'
+                theme === 'light' ? 'bg-hover text-secondary' : 'bg-black/30 text-text-secondary'
               }`}>
                 {fixCommand}
               </code>
@@ -195,8 +195,8 @@ export function EnvCheck() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className={`text-2xl font-bold mb-2 ${theme === 'light' ? 'text-[#1E293B]' : ''}`}>{t.env.title}</h2>
-        <p className={`text-sm mb-4 ${theme === 'light' ? 'text-[#64748B]' : 'text-text-secondary'}`}>{t.env.subtitle}</p>
+        <h2 className={`text-2xl font-bold mb-2 ${theme === 'light' ? 'text-primary' : ''}`}>{t.env.title}</h2>
+        <p className={`text-sm mb-4 ${theme === 'light' ? 'text-secondary' : 'text-text-secondary'}`}>{t.env.subtitle}</p>
       </motion.div>
       
       <div className="flex-1 space-y-3 overflow-y-auto pb-4">

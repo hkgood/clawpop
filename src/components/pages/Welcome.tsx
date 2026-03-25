@@ -51,7 +51,7 @@ export function Welcome() {
   if (checking) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center px-8">
-        <Loader2 size={32} className="text-brand-start animate-spin mb-4" />
+        <Loader2 size={32} className="text-brand animate-spin mb-4" />
         <p className={theme === 'light' ? 'text-[#64748B]' : 'text-text-secondary'}>检测安装状态...</p>
       </div>
     )
@@ -90,7 +90,7 @@ export function Welcome() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="text-base text-brand-start font-medium mb-8"
+        className="text-base text-brand font-medium mb-8"
       >
         {t.welcome.slogan}
       </motion.p>

@@ -45,24 +45,294 @@ fn get_version() -> VersionInfo {
 
 #[tauri::command]
 async fn validate_api_key(model: String, api_key: String) -> Result<bool, String> {
-    // 简单的验证：检查 API Key 格式
-    // 实际应该调用模型 API 验证
+    // 首先检查基本格式
     if api_key.len() < 10 {
         return Ok(false);
     }
     
-    // 根据模型类型验证
-    match model.as_str() {
-        "minimax-m2.5" => {
-            // MiniMax API 验证
-            if api_key.starts_with("mm") || api_key.len() > 20 {
-                Ok(true)
-            } else {
-                Ok(false)
-            }
-        },
+    // 根据模型提供商验证 - 自动检测
+    let provider = if model.contains("minimax") {
+        "minimax"
+    } else if model.contains("anthropic") {
+        "anthropic"
+    } else if model.contains("qwen") || model.contains("aliyun") || model.contains("bailian") {
+        "aliyun"
+    } else if model.contains("deepseek") {
+        "deepseek"
+    } else if model.contains("google") || model.contains("gemini") {
+        "google"
+    } else if model.contains("openai") || model.contains("gpt") {
+        "openai"
+    } else if model.contains("xiaomi") || model.contains("mimo") {
+        "xiaomi"
+    } else if model.contains("mistral") {
+        "mistral"
+    } else if model.contains("llama") || model.contains("meta-llama") {
+        "meta"
+    } else if model.contains("nvidia") || model.contains("nemotron") {
+        "nvidia"
+    } else if model.contains("stepfun") {
+        "stepfun"
+    } else if model.contains("hunter") {
+        "hunter"
+    } else {
+        "unknown"
+    };
+    
+    match provider {
+        "minimax" => validate_minimax_api_key(&api_key).await,
+        "anthropic" => validate_anthropic_api_key(&api_key).await,
+        "aliyun" => validate_aliyun_api_key(&api_key).await,
+        "deepseek" => validate_deepseek_api_key(&api_key).await,
+        "google" => validate_google_api_key(&api_key).await,
+        "openai" => validate_openai_api_key(&api_key).await,
+        "xiaomi" => validate_xiaomi_api_key(&api_key).await,
+        "mistral" => validate_mistral_api_key(&api_key).await,
+        "meta" => validate_meta_api_key(&api_key).await,
+        "nvidia" => validate_nvidia_api_key(&api_key).await,
+        "stepfun" => validate_stepfun_api_key(&api_key).await,
+        "hunter" => validate_hunter_api_key(&api_key).await,
         _ => Ok(api_key.len() > 10),
     }
+}
+
+/// 验证 MiniMax API Key
+async fn validate_minimax_api_key(api_key: &str) -> Result<bool, String> {
+    use std::process::Command;
+    
+    let output = Command::new("curl")
+        .arg("-s")
+        .arg("-X")
+        .arg("GET")
+        .arg("https://api.minimax.chat/v1/models")
+        .arg("-H")
+        .arg(format!("Authorization: Bearer {}", api_key))
+        .arg("-H")
+        .arg("Content-Type: application/json")
+        .output()
+        .map_err(|e| e.to_string())?;
+    
+    let response = String::from_utf8_lossy(&output.stdout);
+    Ok(!response.contains("\"error\""))
+}
+
+/// 验证 Anthropic API Key
+async fn validate_anthropic_api_key(api_key: &str) -> Result<bool, String> {
+    use std::process::Command;
+    
+    let output = Command::new("curl")
+        .arg("-s")
+        .arg("-X")
+        .arg("POST")
+        .arg("https://api.anthropic.com/v1/messages")
+        .arg("-H")
+        .arg(format!("x-api-key: {}", api_key))
+        .arg("-H")
+        .arg("anthropic-version: 2023-06-01")
+        .arg("-H")
+        .arg("Content-Type: application/json")
+        .arg("-d")
+        .arg(r#"{"model":"claude-3-haiku-20240307","max_tokens":1,"messages":[{"role":"user","content":"hi"}]}"#)
+        .output()
+        .map_err(|e| e.to_string())?;
+    
+    let response = String::from_utf8_lossy(&output.stdout);
+    Ok(!response.contains("\"error\""))
+}
+
+/// 验证阿里云 (DashScope) API Key
+async fn validate_aliyun_api_key(api_key: &str) -> Result<bool, String> {
+    use std::process::Command;
+    
+    let output = Command::new("curl")
+        .arg("-s")
+        .arg("-X")
+        .arg("GET")
+        .arg("https://dashscope.aliyuncs.com/api/v1/models")
+        .arg("-H")
+        .arg(format!("Authorization: Bearer {}", api_key))
+        .arg("-H")
+        .arg("Content-Type: application/json")
+        .output()
+        .map_err(|e| e.to_string())?;
+    
+    let response = String::from_utf8_lossy(&output.stdout);
+    Ok(!response.contains("\"error\"") && !response.contains("InvalidApiKey"))
+}
+
+/// 验证 DeepSeek API Key
+async fn validate_deepseek_api_key(api_key: &str) -> Result<bool, String> {
+    use std::process::Command;
+    
+    let output = Command::new("curl")
+        .arg("-s")
+        .arg("-X")
+        .arg("GET")
+        .arg("https://api.deepseek.com/v1/models")
+        .arg("-H")
+        .arg(format!("Authorization: Bearer {}", api_key))
+        .arg("-H")
+        .arg("Content-Type: application/json")
+        .output()
+        .map_err(|e| e.to_string())?;
+    
+    let response = String::from_utf8_lossy(&output.stdout);
+    Ok(!response.contains("\"error\""))
+}
+
+/// 验证 Google API Key
+async fn validate_google_api_key(_api_key: &str) -> Result<bool, String> {
+    use std::process::Command;
+    
+    let output = Command::new("curl")
+        .arg("-s")
+        .arg("-X")
+        .arg("GET")
+        .arg("https://generativelanguage.googleapis.com/v1/models?key=INVALID_KEY")
+        .arg("-H")
+        .arg("Content-Type: application/json")
+        .output()
+        .map_err(|e| e.to_string())?;
+    
+    let response = String::from_utf8_lossy(&output.stdout);
+    // Google 返回 invalid 错误时 key 无效
+    Ok(!response.contains("API_KEY_INVALID") && !response.contains("The API key is not valid"))
+}
+
+/// 验证 OpenAI API Key
+async fn validate_openai_api_key(api_key: &str) -> Result<bool, String> {
+    use std::process::Command;
+    
+    let output = Command::new("curl")
+        .arg("-s")
+        .arg("-X")
+        .arg("GET")
+        .arg("https://api.openai.com/v1/models")
+        .arg("-H")
+        .arg(format!("Authorization: Bearer {}", api_key))
+        .arg("-H")
+        .arg("Content-Type: application/json")
+        .output()
+        .map_err(|e| e.to_string())?;
+    
+    let response = String::from_utf8_lossy(&output.stdout);
+    Ok(!response.contains("\"error\"") && !response.contains("Invalid API key"))
+}
+
+/// 验证小米 API Key
+async fn validate_xiaomi_api_key(api_key: &str) -> Result<bool, String> {
+    use std::process::Command;
+    
+    let output = Command::new("curl")
+        .arg("-s")
+        .arg("-X")
+        .arg("GET")
+        .arg("https://api.xiaomi.com/v1/models")
+        .arg("-H")
+        .arg(format!("Authorization: Bearer {}", api_key))
+        .output()
+        .map_err(|e| e.to_string())?;
+    
+    let response = String::from_utf8_lossy(&output.stdout);
+    Ok(!response.contains("\"error\""))
+}
+
+/// 验证 Mistral API Key
+async fn validate_mistral_api_key(api_key: &str) -> Result<bool, String> {
+    use std::process::Command;
+    
+    let output = Command::new("curl")
+        .arg("-s")
+        .arg("-X")
+        .arg("GET")
+        .arg("https://api.mistral.ai/v1/models")
+        .arg("-H")
+        .arg(format!("Authorization: Bearer {}", api_key))
+        .arg("-H")
+        .arg("Content-Type: application/json")
+        .output()
+        .map_err(|e| e.to_string())?;
+    
+    let response = String::from_utf8_lossy(&output.stdout);
+    Ok(!response.contains("\"error\""))
+}
+
+/// 验证 Meta API Key (Llama via OpenRouter)
+async fn validate_meta_api_key(api_key: &str) -> Result<bool, String> {
+    use std::process::Command;
+    
+    let output = Command::new("curl")
+        .arg("-s")
+        .arg("-X")
+        .arg("GET")
+        .arg("https://openrouter.ai/api/v1/models")
+        .arg("-H")
+        .arg(format!("Authorization: Bearer {}", api_key))
+        .arg("-H")
+        .arg("Content-Type: application/json")
+        .output()
+        .map_err(|e| e.to_string())?;
+    
+    let response = String::from_utf8_lossy(&output.stdout);
+    Ok(!response.contains("\"error\""))
+}
+
+/// 验证 NVIDIA API Key
+async fn validate_nvidia_api_key(api_key: &str) -> Result<bool, String> {
+    use std::process::Command;
+    
+    let output = Command::new("curl")
+        .arg("-s")
+        .arg("-X")
+        .arg("GET")
+        .arg("https://integrate.api.nvidia.com/v1/models")
+        .arg("-H")
+        .arg(format!("Authorization: Bearer {}", api_key))
+        .output()
+        .map_err(|e| e.to_string())?;
+    
+    let response = String::from_utf8_lossy(&output.stdout);
+    Ok(!response.contains("\"error\""))
+}
+
+/// 验证 StepFun API Key
+async fn validate_stepfun_api_key(api_key: &str) -> Result<bool, String> {
+    use std::process::Command;
+    
+    let output = Command::new("curl")
+        .arg("-s")
+        .arg("-X")
+        .arg("GET")
+        .arg("https://api.stepfun.com/v1/models")
+        .arg("-H")
+        .arg(format!("Authorization: Bearer {}", api_key))
+        .arg("-H")
+        .arg("Content-Type: application/json")
+        .output()
+        .map_err(|e| e.to_string())?;
+    
+    let response = String::from_utf8_lossy(&output.stdout);
+    Ok(!response.contains("\"error\""))
+}
+
+/// 验证 Hunter API Key (OpenRouter)
+async fn validate_hunter_api_key(api_key: &str) -> Result<bool, String> {
+    use std::process::Command;
+    
+    let output = Command::new("curl")
+        .arg("-s")
+        .arg("-X")
+        .arg("GET")
+        .arg("https://openrouter.ai/api/v1/models")
+        .arg("-H")
+        .arg(format!("Authorization: Bearer {}", api_key))
+        .arg("-H")
+        .arg("Content-Type: application/json")
+        .output()
+        .map_err(|e| e.to_string())?;
+    
+    let response = String::from_utf8_lossy(&output.stdout);
+    Ok(!response.contains("\"error\""))
 }
 
 #[tauri::command]
@@ -73,6 +343,11 @@ fn close_window(window: tauri::Window) {
 #[tauri::command]
 fn minimize_window(window: tauri::Window) {
     window.minimize().unwrap();
+}
+
+#[tauri::command]
+fn start_dragging(window: tauri::Window) {
+    window.start_dragging().unwrap();
 }
 
 #[tauri::command]
@@ -263,11 +538,12 @@ async fn check_env(window: tauri::Window) -> Result<serde_json::Value, String> {
     
     let _ = window.emit("install-log", format!("✓ Git v{}", git_version.as_deref().unwrap_or("未安装")));
     
-    // 检查网络
-    let network_ok = Command::new("ping")
-        .arg("-c")
-        .arg("1")
-        .arg("github.com")
+    // 检查网络（使用 curl 更可靠）
+    let network_ok = Command::new("curl")
+        .arg("-s")
+        .arg("--connect-timeout")
+        .arg("5")
+        .arg("https://api.github.com")
         .output()
         .map(|o| o.status.success())
         .unwrap_or(false);
@@ -338,7 +614,7 @@ async fn start_install(window: tauri::Window, config: serde_json::Value) -> Resu
         "progress": 70
     }));
     
-    // 克隆仓库
+    // 克隆仓库 - 实时输出
     let _ = window.emit("install-log", "> 克隆 OpenClaw 仓库...");
     let _ = window.emit("install-progress", serde_json::json!({
         "step": "clone",
@@ -351,22 +627,40 @@ async fn start_install(window: tauri::Window, config: serde_json::Value) -> Resu
     if openclaw_dir.exists() {
         let _ = window.emit("install-log", "  仓库已存在，跳过克隆");
     } else {
-        let output = Command::new("git")
+        // 使用 spawn 实时获取 git 输出
+        let mut child = Command::new("git")
             .arg("clone")
+            .arg("--verbose")
             .arg("https://github.com/openclaw/openclaw.git")
             .arg(&openclaw_dir)
-            .output()
+            .stdout(std::process::Stdio::piped())
+            .stderr(std::process::Stdio::piped())
+            .spawn()
             .map_err(|e| e.to_string())?;
         
-        if !output.status.success() {
-            let _ = window.emit("install-log", format!("  ✗ 克隆失败: {}", String::from_utf8_lossy(&output.stderr)));
+        // 读取 stdout
+        if let Some(stdout) = child.stdout.take() {
+            use std::io::{BufRead, BufReader};
+            let reader = BufReader::new(stdout);
+            for line in reader.lines() {
+                if let Ok(line) = line {
+                    let _ = window.emit("install-log", format!("  {}", line));
+                }
+            }
+        }
+        
+        // 等待完成
+        let status = child.wait().map_err(|e| e.to_string())?;
+        
+        if !status.success() {
+            let _ = window.emit("install-log", "  ✗ 克隆失败".to_string());
             return Err("Git clone failed".to_string());
         }
         
         let _ = window.emit("install-log", "  ✓ 克隆完成");
     }
     
-    // 安装依赖
+    // 安装依赖 - 实时输出
     let _ = window.emit("install-log", "> 安装依赖...");
     let _ = window.emit("install-progress", serde_json::json!({
         "step": "deps",
@@ -374,14 +668,32 @@ async fn start_install(window: tauri::Window, config: serde_json::Value) -> Resu
         "progress": 50
     }));
     
-    let output = Command::new("npm")
+    // 使用 npm install --verbose 实时输出
+    let mut child = Command::new("npm")
         .arg("install")
+        .arg("--verbose")
         .current_dir(&openclaw_dir)
-        .output()
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .spawn()
         .map_err(|e| e.to_string())?;
     
-    if !output.status.success() {
-        let _ = window.emit("install-log", format!("  ✗ 安装失败: {}", String::from_utf8_lossy(&output.stderr)));
+    // 读取 stdout
+    if let Some(stdout) = child.stdout.take() {
+        use std::io::{BufRead, BufReader};
+        let reader = BufReader::new(stdout);
+        for line in reader.lines() {
+            if let Ok(line) = line {
+                let _ = window.emit("install-log", format!("  {}", line));
+            }
+        }
+    }
+    
+    // 等待完成
+    let status = child.wait().map_err(|e| e.to_string())?;
+    
+    if !status.success() {
+        let _ = window.emit("install-log", "  ✗ 安装失败".to_string());
         return Err("npm install failed".to_string());
     }
     
@@ -404,7 +716,8 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             close_window, 
-            minimize_window, 
+            minimize_window,
+            start_dragging, 
             check_env, 
             start_install, 
             check_installed, 

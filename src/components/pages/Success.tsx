@@ -32,16 +32,16 @@ export function Success() {
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-        className="w-24 h-24 rounded-3xl bg-gradient-to-br from-brand-start to-brand-end flex items-center justify-center mb-8 shadow-2xl shadow-brand-start/30"
+        className="w-20 h-20 rounded-sm bg-brand flex items-center justify-center mb-6"
       >
-        <Sparkles size={40} className="text-white" />
+        <Sparkles size={40} className="text-[FAFAFA]" />
       </motion.div>
       
       <motion.h1
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="text-4xl font-bold text-center mb-4"
+        className="text-h1 text-center mb-4 text-primary"
       >
         {t.success.title}
       </motion.h1>
@@ -50,7 +50,7 @@ export function Success() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="text-xl text-text-secondary text-center mb-8"
+        className={`text-body text-center mb-8 $text-secondary`}
       >
         {t.success.subtitle}
       </motion.p>
@@ -63,18 +63,18 @@ export function Success() {
         className="w-full max-w-md space-y-4 mb-8"
       >
         <div className="card p-4 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-brand-start/20 flex items-center justify-center">
-            <Globe size={20} className="text-brand-start" />
+          <div className="w-12 h-12 rounded bg-brand/20 flex items-center justify-center">
+            <Globe size={20} className="text-brand" />
           </div>
           <div className="flex-1">
-            <div className="text-sm text-text-secondary">{t.success.consoleUrl}</div>
+            <div className={`text-sm $text-secondary`}>{t.success.consoleUrl}</div>
             <button 
               onClick={handleCopyUrl}
-              className="font-mono text-brand-start hover:underline flex items-center gap-1 group"
+              className="font-mono text-brand hover:underline flex items-center gap-1 group"
             >
               {consoleUrl}
               {copied ? (
-                <Check size={14} className="text-status-success" />
+                <Check size={14} className="text-success" />
               ) : (
                 <Copy size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
               )}
@@ -83,13 +83,13 @@ export function Success() {
         </div>
         
         <div className="card p-4 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-status-success/20 flex items-center justify-center">
-            <MessageCircle size={20} className="text-status-success" />
+          <div className="w-12 h-12 rounded bg-success flex items-center justify-center">
+            <MessageCircle size={20} className="text-success" />
           </div>
           <div className="flex-1">
-            <div className="text-sm text-text-secondary">{t.success.nextStep}</div>
+            <div className={`text-sm $text-secondary`}>{t.success.nextStep}</div>
             <div className="text-sm">
-              {language === 'zh' ? '在控制台发送' : 'Send'} <code className="px-1.5 py-0.5 bg-white/10 rounded text-brand-start">{t.success.startCmd}</code> {language === 'zh' ? '开始对话' : 'to start'}
+              {t.success.sendCmd} <code className="px-1.5 py-0.5 bg-hover rounded text-brand">{t.success.startCmd}</code> {t.success.toStart}
             </div>
           </div>
         </div>
@@ -117,14 +117,14 @@ export function Success() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
-        className="mt-12 text-sm text-text-secondary text-center"
+        className={`mt-12 text-sm text-center $text-secondary`}
       >
         <p>{language === 'zh' ? '如有问题，请查看' : 'For help, check'}</p>
         <a 
           href="https://docs.openclaw.ai" 
           target="_blank"
           rel="noopener noreferrer"
-          className="text-brand-start hover:underline inline-flex items-center gap-1"
+          className="text-brand hover:underline inline-flex items-center gap-1"
         >
           {t.success.docs}
           <ExternalLink size={12} />
