@@ -110,3 +110,4 @@ jobs:
             - Windows: ClawPop___VERSION___x64-setup.exe
           releaseDraft: false
           prerelease: false
+          createRelease: false
