@@ -43,9 +43,23 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: 'clawpop v__VERSION__'
-          releaseBody: 'See the assets to download this version and install.'
-          releaseDraft: true
+          releaseName: 'v__VERSION__ - OpenClaw 安装向导'
+          releaseBody: |
+            ## ClawPop v__VERSION__
+
+            让安装 OpenClaw 变得像打开 App 一样简单。
+
+            ### 新功能
+            - 极简设计风格
+            - 37+ 主流模型支持（MiniMax、阿里云、Claude、DeepSeek、GPT 等）
+            - API Key 实时验证
+            - 安装进度实时显示
+            - macOS / Windows 跨平台
+
+            ### 下载
+            - macOS: ClawPop___VERSION___aarch64.dmg
+            - Windows: ClawPop___VERSION___x64-setup.exe
+          releaseDraft: false
           prerelease: false
 
   build-windows:
@@ -78,7 +92,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: 'clawpop v__VERSION__'
-          releaseBody: 'See the assets to download this version and install.'
-          releaseDraft: true
+          releaseName: 'v__VERSION__ - OpenClaw 安装向导'
+          releaseBody: |
+            ## ClawPop v__VERSION__
+
+            让安装 OpenClaw 变得像打开 App 一样简单。
+
+            ### 新功能
+            - 极简设计风格
+            - 37+ 主流模型支持（MiniMax、阿里云、Claude、DeepSeek、GPT 等）
+            - API Key 实时验证
+            - 安装进度实时显示
+            - macOS / Windows 跨平台
+
+            ### 下载
+            - macOS: ClawPop___VERSION___aarch64.dmg
+            - Windows: ClawPop___VERSION___x64-setup.exe
+          releaseDraft: false
           prerelease: false
