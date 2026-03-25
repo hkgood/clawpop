@@ -30,7 +30,7 @@
 
 ## 📸 界面预览
 
-![ClawPop 首页](screenshots/home.png)
+![ClawPop 首页](screenshots/Home.png)
 
 ## 🚀 快速开始
 
