@@ -5,6 +5,11 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号 (如 0.3.15)，不填则自动从 package.json 读取'
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -17,26 +22,31 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
-        
+
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          
+
       - name: Update version from tag
         run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
-          if [ "$VERSION" != "$CURRENT_VERSION" ]; then
-            npm version $VERSION --no-git-tag-version
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ -n "${{ inputs.version }}" ]; then
+            VERSION="${{ inputs.version }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/v}"
           fi
-          
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "版本对比: TAG=$VERSION vs package.json=$CURRENT_VERSION"
+          if [ "$VERSION" != "$CURRENT_VERSION" ]; then
+            npm version "$VERSION" --no-git-tag-version
+          fi
+
       - name: Install dependencies
         run: npm install
-        
+
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
         env:
@@ -66,26 +76,32 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
-        
+
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          
+
       - name: Update version from tag
+        shell: pwsh
         run: |
-          $version = $env:GITHUB_REF -replace 'refs/tags/v', ''
+          if ($env:GITHUB_EVENT_NAME -eq "workflow_dispatch" -and "${{ inputs.version }}" -ne "") {
+            $version = "${{ inputs.version }}"
+          } else {
+            $version = $env:GITHUB_REF -replace 'refs/tags/v', ''
+          }
           $currentVersion = (Get-Content package.json | ConvertFrom-Json).version
+          Write-Host "版本对比: TAG=$version vs package.json=$currentVersion"
           if ($version -ne $currentVersion) {
             npm version $version --no-git-tag-version
           }
-          
+
       - name: Install dependencies
         run: npm install
-        
+
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
         env:
